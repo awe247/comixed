@@ -19,8 +19,9 @@ export class ComicService {
   all_comics: Comic[] = [];
   all_comics_update: EventEmitter<Comic[]> = new EventEmitter();
   private last_comic_date: string;
-  private fetching_comics: boolean = false;
-  private authenticated: boolean = false;
+  private fetching_comics = false;
+  private authenticated = false;
+  private username = '';
 
   constructor(private http: HttpClient, private errorsService: ErrorsService) {
     this.monitorAuthentication();
@@ -34,8 +35,10 @@ export class ComicService {
         response => {
           if (response && response['name']) {
             this.authenticated = true;
+            this.username = response['name'];
           } else {
             this.authenticated = false;
+            this.username = '';
           }
         },
         error => {
@@ -174,12 +177,21 @@ export class ComicService {
     return this.http.get(`${this.api_url}/logout`);
   }
 
+  getUsername(): string {
+    return this.username;
+  }
+
   get_user_preference(name: String): Observable<any> {
     return this.http.get(`${this.api_url}/user/property?name=${name}`);
   }
 
+  updateUsernameAndPassword(username: string, password: string): Observable<any> {
+    const params = new HttpParams().set('username', username).set('password', password);
+    return this.http.post(`${this.api_url}/user/update`, params);
+  }
+
   set_user_preference(name: string, value: string): void {
-    let params = new HttpParams().set('name', name).set('value', value);
+    const params = new HttpParams().set('name', name).set('value', value);
     this.http.post(`${this.api_url}/user/property`, params).subscribe(
       (response: Response) => {
         console.log('Preference saved: ' + name + '=' + value);
