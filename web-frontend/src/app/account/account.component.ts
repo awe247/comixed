@@ -13,6 +13,8 @@ export class AccountComponent implements OnInit {
   password = '';
   password_check = '';
   message = '';
+  has_error = false;
+  password_error = '';
 
   constructor(
     private comicService: ComicService,
@@ -25,22 +27,40 @@ export class AccountComponent implements OnInit {
 
   passesPasswordValidation(): boolean {
     if ((this.password.length > 8) && (this.password === this.password_check)) {
-      this.message = 'Passwords match...';
+      this.password_error = '';
       return true;
     } else {
-      this.message = 'Passwords do not match.';
+      this.password_error = 'Passwords do not match.';
       return false;
     }
   }
 
-  updateUsernameAndPassword(): void {
-    this.comicService.updateUsernameAndPassword(this.username, this.password).subscribe(
+  updateUsername(): void {
+    this.comicService.change_username(this.username).subscribe(
       (response: Response) => {
-        this.message = 'Username and password updated...';
+        this.password_error = '';
+        this.message = 'Username updated...';
+        this.has_error = false;
       },
       (error: Error) => {
         console.log('ERROR:', error.message);
-        this.errorsService.fireErrorMessage('Failed to update username and password');
+        this.message = 'Failed to update username...';
+        this.has_error = true;
+      }
+    );
+  }
+
+  updatePassword(): void {
+    this.comicService.change_password(this.password).subscribe(
+      (response: Response) => {
+        this.password_error = '';
+        this.message = 'Password updated...';
+        this.has_error = false;
+      },
+      (error: Error) => {
+        console.log('ERROR:', error.message);
+        this.message = 'Failed to update password...';
+        this.has_error = true;
       }
     );
   }
