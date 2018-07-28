@@ -20,7 +20,7 @@ export class AccountComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.username = this.comic_service.getUsername();
+    // this.username = this.comic_service.getUsername();
   }
 
   passesPasswordValidation(): boolean {

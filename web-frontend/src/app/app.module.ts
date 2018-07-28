@@ -32,6 +32,7 @@ import {
   ANIMATION_TYPES,
 } from 'ngx-loading';
 
+import {AuthenticationModule} from './authentication/authentication.module';
 import {ComicModule} from './comic/comic.module';
 import {MainPageComponent} from './main-page/main-page.component';
 import {LoginComponent} from './login/login.component';
@@ -49,6 +50,7 @@ import {AlertService} from './alert.service';
     BrowserModule,
     NgbModule.forRoot(),
     AppRoutingModule,
+    AuthenticationModule,
     HttpClientModule,
     ComicModule,
     FormsModule,

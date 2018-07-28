@@ -27,6 +27,7 @@ import {Subject} from 'rxjs/Subject';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 import {User} from '../user.model';
+import {AuthenticationService} from '../authentication/authentication.service';
 import {AlertService} from '../alert.service';
 import {Comic} from './comic.model';
 import {Page} from './page.model';
@@ -42,33 +43,18 @@ export class ComicService {
   all_comics_update: EventEmitter<Comic[]> = new EventEmitter();
   private last_comic_date: string;
   private fetching_comics = false;
-  private user: User = new User();
 
   constructor(
     private http: HttpClient,
     private alert_service: AlertService,
+    private authenticationService: AuthenticationService,
   ) {
-    this.monitor_authentication_status();
     this.monitor_remote_comic_list();
-  }
-
-  monitor_authentication_status(): void {
-    setInterval(() => {
-      const headers = new HttpHeaders();
-      this.http.get(`${this.api_url}/user`, {headers: headers}).subscribe(
-        (user: User) => {
-          this.user = user;
-        },
-        error => {
-          console.log('ERROR: ' + error.message);
-          this.user = new User();
-        });
-    }, 250);
   }
 
   monitor_remote_comic_list(): void {
     setInterval(() => {
-      if (!this.user.authenticated || this.fetching_comics) {
+      if (!this.authenticationService.isAuthorized() || this.fetching_comics) {
         return;
       } else {
         this.fetching_comics = true;
@@ -217,36 +203,6 @@ export class ComicService {
 
   get_download_link_for_comic(comicId: number): string {
     return `${this.api_url}/comics/${comicId}/download`;
-  }
-
-  isAuthenticated(): boolean {
-    return this.user.authenticated;
-  }
-
-  login(email: string, password: string, callback) {
-    const headers = new HttpHeaders({authorization: 'Basic ' + btoa(email + ':' + password)});
-    this.http.get(`${this.api_url}/user`, {headers: headers}).subscribe(
-      (user: User) => {
-        this.user = user;
-
-        callback && callback();
-      },
-      error => {
-        this.alert_service.show_error_message('Login failure', error);
-        this.user = new User();
-      });
-  }
-
-  logout(): Observable<any> {
-    return this.http.get(`${this.api_url}/logout`);
-  }
-
-  get_user(): User {
-    return this.user;
-  }
-
-  getUsername(): string {
-    return this.user.name;
   }
 
   get_user_preference(name: String): Observable<any> {

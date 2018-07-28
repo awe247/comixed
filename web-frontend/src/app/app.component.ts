@@ -21,6 +21,7 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {LoadingModule} from 'ngx-loading';
 
+import {AuthenticationService} from './authentication/authentication.service';
 import {ComicService} from './comic/comic.service';
 import {AlertService} from './alert.service';
 
@@ -40,6 +41,7 @@ export class AppComponent implements OnInit {
   read_count = 0;
 
   constructor(
+    private authenticationService: AuthenticationService,
     private comic_service: ComicService,
     private alert_service: AlertService,
     private router: Router,
@@ -77,11 +79,8 @@ export class AppComponent implements OnInit {
   }
 
   logout(): void {
-    this.comic_service.logout().subscribe(
-      () => {
-        this.router.navigateByUrl('/login');
-      }
-    );
+    this.authenticationService.logout();
+    this.router.navigate(['home']);
   }
 
   clearErrorMessage(): void {
@@ -89,17 +88,10 @@ export class AppComponent implements OnInit {
   }
 
   isAuthenticated(): boolean {
-    return this.comic_service.isAuthenticated();
+    return false;
   }
 
   is_admin(): boolean {
-    if (this.comic_service.isAuthenticated()) {
-      for (const role of this.comic_service.get_user().authorities) {
-        if (role.authority === 'ROLE_ADMIN') {
-          return true;
-        }
-      }
-    }
     return false;
   }
 }
