@@ -19,7 +19,7 @@
 
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
-
+import {PublicGuard, ProtectedGuard} from 'ngx-auth';
 import {MainPageComponent} from './main-page/main-page.component';
 import {LoginComponent} from './login/login.component';
 import {AccountComponent} from './account/account.component';
@@ -28,20 +28,23 @@ import {ComicListComponent} from './comic/comic-list/comic-list.component';
 import {ImportComicListComponent} from './comic/import-comic-list/import-comic-list.component';
 import {ComicDetailsComponent} from './comic/comic-details/comic-details.component';
 
-const routes: Routes = [
-  {path: 'home', component: MainPageComponent},
-  {path: 'login', component: LoginComponent},
-  {path: 'account', component: AccountComponent},
-  {path: 'duplicates', component: DuplicatePageListComponent},
-  {path: 'comics', component: ComicListComponent},
-  {path: 'comics/:id', component: ComicDetailsComponent},
-  {path: 'import', component: ImportComicListComponent},
+const publicRoutes: Routes = [
+  {path: 'home', component: MainPageComponent, canActivate: [PublicGuard]},
+  {path: 'login', component: LoginComponent, canActivate: [PublicGuard]},
   {path: '', redirectTo: 'home', pathMatch: 'full'},
   {path: '**', redirectTo: 'home'},
 ];
 
+const protectedRoutes: Routes = [
+  {path: 'account', component: AccountComponent, canActivate: [ProtectedGuard]},
+  {path: 'duplicates', component: DuplicatePageListComponent, canActivate: [ProtectedGuard]},
+  {path: 'comics', component: ComicListComponent, canActivate: [ProtectedGuard]},
+  {path: 'comics/:id', component: ComicDetailsComponent, canActivate: [ProtectedGuard]},
+  {path: 'import', component: ImportComicListComponent, canActivate: [ProtectedGuard]},
+];
+
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(publicRoutes), RouterModule.forRoot(protectedRoutes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}
