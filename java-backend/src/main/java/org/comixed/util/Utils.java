@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component(value = "utils")
 public class Utils
 {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());

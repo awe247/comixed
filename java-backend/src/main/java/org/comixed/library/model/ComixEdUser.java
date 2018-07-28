@@ -34,6 +34,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -51,6 +52,9 @@ public class ComixEdUser
             nullable = false,
             unique = true)
     private String email;
+
+    @Transient
+    private String password;
 
     @Column(name = "password_hash",
             updatable = true,
@@ -100,6 +104,11 @@ public class ComixEdUser
         return this.lastLoginDate;
     }
 
+    public String getPassword()
+    {
+        return this.password;
+    }
+
     public String getPasswordHash()
     {
         return this.passwordHash;
@@ -137,6 +146,11 @@ public class ComixEdUser
         this.lastLoginDate = lastLoginDate;
     }
 
+    public void setPassword(String password)
+    {
+        this.password = password;
+    }
+
     public void setPasswordHash(String passwordHash)
     {
         this.passwordHash = passwordHash;
@@ -152,7 +166,7 @@ public class ComixEdUser
      */
     public void setProperty(String name, String value)
     {
-        for (Preference preference : preferences)
+        for (Preference preference : this.preferences)
         {
             if (preference.getName().equals(name))
             {

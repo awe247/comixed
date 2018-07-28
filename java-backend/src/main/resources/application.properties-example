@@ -28,8 +28,15 @@ spring.h2.console.path=/h2
 # Logging
 logging.level.root=INFO
 logging.level.org.springframework=INFO
+logging.level.org.springframework.security.authentication=DEBUG
 logging.level.org.hibernate=INFO
 logging.level.org.comixed=INFO
+
+# Authentication
+auth.jwt.tokenExpirationTime=15
+auth.jwt.refreshTokenExpTime=60
+auth.jwt.tokenIssuer=http://www.comixed.org
+auth.jwt.tokenSigningKey=xm8EV6Hy5RMFK4EEACIDAwQus
 
 # Comic entry loaders
 comic.entry.loaders[0].type=jpeg
