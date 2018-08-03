@@ -1,6 +1,6 @@
 /*
  * ComixEd - A digital comic book library management application.
- * Copyright (C) 2017, Darryl L. Pierce
+ * Copyright (C) 2018, The ComixEd Project.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,36 +17,29 @@
  * org.comixed;
  */
 
-import {PageType} from './page-type.model';
+package org.comixed.repositories;
 
-export class Page {
-  id: number;
-  comic_id: number;
-  filename: string;
-  width: number;
-  height: number;
-  index: number;
-  hash: string;
-  deleted: boolean;
-  page_type: PageType;
+import org.comixed.library.model.PageType;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 
-  constructor(
-    id: number,
-    comic_id: number,
-    filename: string,
-    width: number,
-    height: number,
-    hash: string,
-    deleted: boolean,
-    page_type: PageType,
-  ) {
-    this.id = id;
-    this.comic_id = comic_id;
-    this.filename = filename;
-    this.width = width;
-    this.height = height;
-    this.hash = hash;
-    this.deleted = deleted;
-    this.page_type = page_type;
-  }
+/**
+ * <code>PageTypeRepository</code> retrieves instances of {@link PageType} from
+ * the database.
+ * 
+ * @author Darryl L. Pierce
+ *
+ */
+public interface PageTypeRepository extends
+                                    CrudRepository<PageType,
+                                                   Long>
+{
+    /**
+     * Returns the default page type.
+     * 
+     * @return the default page type
+     */
+    @Query("SELECT pt FROM PageType pt WHERE pt.name = 'story'")
+    PageType getDefaultPageType();
+
 }
