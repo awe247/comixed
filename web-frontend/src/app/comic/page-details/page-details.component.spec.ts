@@ -1,6 +1,6 @@
 /*
  * ComixEd - A digital comic book library management application.
- * Copyright (C) 2017, Darryl L. Pierce
+ * Copyright (C) 2018, The ComiXed Project.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,36 +17,28 @@
  * org.comixed;
  */
 
-import {PageType} from './page-type.model';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-export class Page {
-  id: number;
-  comic_id: number;
-  filename: string;
-  width: number;
-  height: number;
-  index: number;
-  hash: string;
-  deleted: boolean;
-  page_type: PageType;
+import {PageDetailsComponent} from './page-details.component';
 
-  constructor(
-    id?: number,
-    comic_id?: number,
-    filename?: string,
-    width?: number,
-    height?: number,
-    hash?: string,
-    deleted?: boolean,
-    page_type?: PageType,
-  ) {
-    this.id = id;
-    this.comic_id = comic_id;
-    this.filename = filename;
-    this.width = width;
-    this.height = height;
-    this.hash = hash;
-    this.deleted = deleted;
-    this.page_type = page_type;
-  }
-}
+describe('PageDetailsComponent', () => {
+  let component: PageDetailsComponent;
+  let fixture: ComponentFixture<PageDetailsComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [PageDetailsComponent]
+    })
+      .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(PageDetailsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

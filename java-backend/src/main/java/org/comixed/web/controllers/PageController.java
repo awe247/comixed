@@ -37,6 +37,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -53,13 +54,6 @@ public class PageController
     private PageRepository pageRepository;
     @Autowired
     private PageTypeRepository pageTypeRepository;
-
-    @RequestMapping(value = "/pages/types",
-                    method = RequestMethod.GET)
-    public Iterable<PageType> getPageTypes()
-    {
-        return pageTypeRepository.findAll();
-    }
 
     @RequestMapping(value = "/pages/{id}",
                     method = RequestMethod.DELETE)
@@ -184,6 +178,13 @@ public class PageController
         else return comic.getPages();
     }
 
+    @RequestMapping(value = "/pages/types",
+                    method = RequestMethod.GET)
+    public Iterable<PageType> getPageTypes()
+    {
+        return this.pageTypeRepository.findAll();
+    }
+
     @RequestMapping(value = "/pages/{id}/undelete",
                     method = RequestMethod.POST)
     public void undeletePage(@PathVariable("id") long id)
@@ -201,6 +202,35 @@ public class PageController
             page.markDeleted(false);
             this.pageRepository.save(page);
             this.logger.debug("Page undeleted: id={}", id);
+        }
+    }
+
+    @RequestMapping(value = "/pages/{id}/type",
+                    method = RequestMethod.PUT)
+    public void updateTypeForPage(@PathVariable("id") long id, @RequestParam("type_id") long pageTypeId)
+    {
+        this.logger.debug("Setting page type: id={} typeId={}", id, pageTypeId);
+
+        Page page = this.pageRepository.findOne(id);
+
+        if (page == null)
+        {
+            this.logger.error("No such page: id={}", id);
+        }
+        else
+        {
+            PageType pageType = this.pageTypeRepository.findOne(pageTypeId);
+
+            if (pageType == null)
+            {
+                this.logger.error("No such page type: typeId={}", pageTypeId);
+            }
+            else
+            {
+                this.logger.debug("Updating page type");
+                page.setPageType(pageType);
+                this.pageRepository.save(page);
+            }
         }
     }
 }

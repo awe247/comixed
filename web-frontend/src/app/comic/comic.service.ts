@@ -30,12 +30,14 @@ import {User} from '../user.model';
 import {ErrorsService} from '../errors.service';
 import {Comic} from './comic.model';
 import {Page} from './page.model';
+import {PageType} from './page-type.model';
 import {FileDetails} from './file-details.model';
 
 @Injectable()
 export class ComicService {
   private api_url = 'api';
   current_comic: Subject<Comic> = new BehaviorSubject<Comic>(new Comic());
+  current_page: Subject<Page> = new BehaviorSubject<Page>(new Page());
   all_comics: Comic[] = [];
   all_comics_update: EventEmitter<Comic[]> = new EventEmitter();
   private last_comic_date: string;
@@ -98,6 +100,10 @@ export class ComicService {
     this.current_comic.next(comic);
   }
 
+  set_current_page(page: Page): void {
+    this.current_page.next(page);
+  }
+
   removeComic(comic_id: number) {
     this.all_comics = this.all_comics.filter((comic: Comic) => comic.id !== comic_id);
     this.all_comics_update.emit(this.all_comics);
@@ -113,6 +119,33 @@ export class ComicService {
 
   getComicCount(): Observable<any> {
     return this.http.get(`${this.api_url}/comics/count`);
+  }
+
+  get_page_types(): Observable<any> {
+    return this.http.get(`/api/pages/types`);
+  }
+
+  set_page_type(page: Page, page_type: PageType): Observable<any> {
+    const params = new HttpParams().set('type_id', `${page_type.id}`);
+    return this.http.put(`/api/pages/${page.id}/type`, params);
+  }
+
+  get_display_name_for_page_type(page_type: PageType): string {
+    switch (page_type.name) {
+      case 'front-cover': return 'Front Cover';
+      case 'inner-cover': return 'Inner Cover';
+      case 'back-cover': return 'Back Cover';
+      case 'roundup': return 'Roundup';
+      case 'story': return 'Story';
+      case 'advertisement': return 'Advertisement';
+      case 'editorial': return 'Editorial';
+      case 'letters': return 'Letters';
+      case 'preview': return 'Preview';
+      case 'other': return 'Other';
+      case 'filtered': return 'Filtered';
+      default: return 'Unknown (' + page_type + ')';
+    }
+
   }
 
   getDuplicatePageCount(): Observable<any> {

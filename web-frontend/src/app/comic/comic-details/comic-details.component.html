@@ -1,3 +1,9 @@
+<!-- page details -->
+<div id='display_page_details' class='modal fade' role='dialog'>
+  <div class='modal-dialog modal-lg'>
+    <app-page-details [page]='current_page'></app-page-details>
+  </div>
+</div>
 <app-read-viewer [comic]='comic'></app-read-viewer>
 <div id='comic_title_section' class='row'
   *ngIf='comic.series && comic.volume && comic.issue_number'>
@@ -76,6 +82,6 @@
   </div>
   <div class='row'>
     <app-page-thumbnail *ngFor='let page of comic.pages'
-      [missing]='comic.missing' [page]='page'></app-page-thumbnail>
+      [missing]='comic.missing' [page]='page' [page_types]='page_types'></app-page-thumbnail>
   </div>
 </div>
