@@ -70,7 +70,7 @@ export class ComicService {
       } else {
         this.fetching_comics = true;
         let params = new HttpParams();
-        if (this.last_comic_date) {
+        if (this.all_comics.length > 0 && this.last_comic_date) {
           params = new HttpParams().set('after', this.last_comic_date);
         }
 
@@ -94,6 +94,10 @@ export class ComicService {
           });
       }
     }, 500);
+  }
+
+  reload_comics(): void {
+    this.all_comics = [];
   }
 
   setCurrentComic(comic: Comic): void {
@@ -166,6 +170,15 @@ export class ComicService {
 
   getFilesUnder(directory: string): Observable<any> {
     return this.http.get(`${this.api_url}/files/contents?directory=${directory}`);
+  }
+
+  block_page(page_hash: string): Observable<any> {
+    const params = new HttpParams().set('hash', page_hash);
+    return this.http.post(`${this.api_url}/pages/blocked`, params);
+  }
+
+  unblock_page(page_hash: string): Observable<any> {
+    return this.http.delete(`${this.api_url}/pages/blocked/${page_hash}`);
   }
 
   deleteComic(comic: Comic): Observable<any> {

@@ -1,6 +1,6 @@
 /*
  * ComixEd - A digital comic book library management application.
- * Copyright (C) 2017, Darryl L. Pierce
+ * Copyright (C) 2018, The ComiXed Project.
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,13 +19,12 @@
 
 package org.comixed.repositories;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-import java.util.List;
-
-import org.comixed.library.model.Page;
+import org.comixed.library.model.BlockedPageHash;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,45 +48,47 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
  DirtiesContextTestExecutionListener.class,
  TransactionalTestExecutionListener.class,
  DbUnitTestExecutionListener.class})
-public class PageRepositoryTest
+public class BlockedPageHashRepositoryTest
 {
-    private static final Long BLOCKED_PAGE_ID = 1000L;
-    private static final Long UNBLOCKED_PAGE_ID = 1001L;
+    private static final String BLOCKED_PAGE_HASH = "12345";
 
     @Autowired
-    private PageRepository repository;
+    private BlockedPageHashRepository repository;
 
     @Test
-    public void testGetDuplicatePageList()
+    public void testAddBlockedHash()
     {
-        List<Page> result = repository.getDuplicatePageList();
+        BlockedPageHash hash = new BlockedPageHash(BLOCKED_PAGE_HASH + BLOCKED_PAGE_HASH);
 
-        assertFalse(result.isEmpty());
-        assertEquals(3, result.size());
-        assertEquals(1000L, result.get(0).getComic().getId().longValue());
-        assertEquals(1001L, result.get(1).getComic().getId().longValue());
-        assertEquals(1002L, result.get(2).getComic().getId().longValue());
+        repository.save(hash);
+
+        BlockedPageHash result = repository.findByHash(BLOCKED_PAGE_HASH + BLOCKED_PAGE_HASH);
+
+        assertNotNull(result);
+        assertEquals(BLOCKED_PAGE_HASH + BLOCKED_PAGE_HASH, result.getHash());
     }
 
     @Test
-    public void testGetDuplicatePageCount()
+    public void testRemoveBlockedHash()
     {
-        assertEquals(3, repository.getDuplicatePageCount());
+        BlockedPageHash result = repository.findByHash(BLOCKED_PAGE_HASH);
+
+        assertNotNull(result);
+
+        repository.delete(result);
+
+        result = repository.findByHash(BLOCKED_PAGE_HASH);
+
+        assertNull(result);
     }
 
     @Test
-    public void testGetPageWithBlockedHash()
+    public void testGetAllHashes()
     {
-        Page result = repository.findOne(BLOCKED_PAGE_ID);
+        String[] result = repository.getAllHashes();
 
-        assertTrue(result.isBlocked());
-    }
-
-    @Test
-    public void testGetPageWithNonBlockedHash()
-    {
-        Page result = repository.findOne(UNBLOCKED_PAGE_ID);
-
-        assertFalse(result.isBlocked());
+        assertArrayEquals(new String[]
+        {"12345",
+         "23456"}, result);
     }
 }
