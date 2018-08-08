@@ -22,7 +22,7 @@ import {FormBuilder, FormGroup, FormArray, Validators, AbstractControl} from '@a
 
 import {FileDetails} from '../file-details.model';
 import {ComicService} from '../comic.service';
-import {ErrorService} from '../../error.service';
+import {AlertService} from '../../alert.service';
 
 @Component({
   selector: 'app-import-comics',
@@ -41,8 +41,11 @@ export class ImportComicListComponent implements OnInit {
   pending_imports = 0;
   waiting_on_imports = false;
 
-  constructor(private comic_service: ComicService, private errorsService: ErrorService,
-    builder: FormBuilder) {
+  constructor(
+    private comic_service: ComicService,
+    private alert_service: AlertService,
+    builder: FormBuilder,
+  ) {
     this.directoryForm = builder.group({'directory': ['', Validators.required]});
     this.directory = this.directoryForm.controls['directory'];
   }
@@ -66,8 +69,7 @@ export class ImportComicListComponent implements OnInit {
           }
         },
         error => {
-          console.log('ERROR', error.message);
-          that.errorsService.send_error_message('Error getting the number of pending imports...');
+          that.alert_service.show_error_message('Error getting the number of pending imports...', error);
           that.importing = false;
         },
         () => {
@@ -87,8 +89,7 @@ export class ImportComicListComponent implements OnInit {
         that.plural = this.files.length !== 1;
       },
       error => {
-        console.log('ERROR:', error.message);
-        that.errorsService.send_error_message('Error while loading filenames...');
+        that.alert_service.show_error_message('Error while loading filenames...', error);
       },
       () => {
         that.busy = false;
@@ -113,7 +114,7 @@ export class ImportComicListComponent implements OnInit {
     this.comic_service.import_files_into_library(selectedFiles).subscribe(
       () => {},
       error => {
-        console.log('ERROR:', error.message);
+        this.alert_service.show_error_message('Failed to get the list of files...', error);
         that.importing = false;
       }
     );

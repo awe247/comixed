@@ -21,38 +21,50 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 
 import {ComicService} from './comic/comic.service';
-import {ErrorService} from './error.service';
+import {AlertService} from './alert.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [ComicService, ErrorService],
+  providers: [ComicService, AlertService],
 })
 export class AppComponent implements OnInit {
   title = 'ComixEd';
-  error_message: string;
+  alert_type: string;
+  alert_message: string;
   comic_count = 0;
   read_count = 0;
 
-  constructor(private comicService: ComicService, private errorsService: ErrorService, private router: Router) {
+  constructor(
+    private comic_service: ComicService,
+    private alert_service: AlertService,
+    private router: Router,
+  ) {
   }
 
   ngOnInit() {
-    this.errorsService.error_messages.subscribe(
+    this.alert_service.error_messages.subscribe(
       (message: string) => {
-        this.error_message = message;
+        this.alert_type = 'alert-danger';
+        this.alert_message = message;
+      }
+    );
+    this.alert_service.info_messages.subscribe(
+      (message: string) => {
+        this.alert_type = 'alert-info';
+        this.alert_message = message;
       }
     );
     setInterval(() => {
-      this.comicService.get_library_comic_count().subscribe(
+      this.comic_service.get_library_comic_count().subscribe(
         count => this.comic_count = count,
         error => console.log('ERROR:', error.message));
     }, 250);
   }
 
   logout(): void {
-    this.comicService.logout().subscribe(
+    this.comic_service.logout().subscribe(
       () => {
         this.router.navigateByUrl('/login');
       }
@@ -60,16 +72,16 @@ export class AppComponent implements OnInit {
   }
 
   clearErrorMessage(): void {
-    this.error_message = '';
+    this.alert_message = '';
   }
 
   isAuthenticated(): boolean {
-    return this.comicService.isAuthenticated();
+    return this.comic_service.isAuthenticated();
   }
 
   is_admin(): boolean {
-    if (this.comicService.isAuthenticated()) {
-      for (const role of this.comicService.get_user().authorities) {
+    if (this.comic_service.isAuthenticated()) {
+      for (const role of this.comic_service.get_user().authorities) {
         if (role.authority === 'ROLE_ADMIN') {
           return true;
         }

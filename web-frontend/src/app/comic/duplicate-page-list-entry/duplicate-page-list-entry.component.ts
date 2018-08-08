@@ -22,7 +22,7 @@ import {Router} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
 
 import {ComicService} from '../comic.service';
-import {ErrorService} from '../../error.service';
+import {AlertService} from '../../alert.service';
 import {Page} from '../page.model';
 import {Comic} from '../comic.model';
 
@@ -52,7 +52,7 @@ export class DuplicatePageListEntryComponent implements OnInit {
   constructor(
     private router: Router,
     private comic_service: ComicService,
-    private errors_service: ErrorService,
+    private errors_service: AlertService,
   ) {}
 
   ngOnInit() {
@@ -64,8 +64,7 @@ export class DuplicatePageListEntryComponent implements OnInit {
         that.image_size = cover_size || 175;
       },
       (error: Error) => {
-        console.log('ERROR:', error.message);
-        that.errors_service.send_error_message('Error loading user preference: cover_size');
+        that.errors_service.show_error_message('Error loading user preference: cover_size', error);
       }
     );
   }
@@ -106,8 +105,7 @@ export class DuplicatePageListEntryComponent implements OnInit {
         page.deleted = true;
       },
       (error: Error) => {
-        this.errors_service.send_error_message(error.message);
-        console.log('ERROR:' + error.message);
+        this.errors_service.show_error_message(error.message, error);
       },
       () => {
         this.update_all_are_deleted();
@@ -121,8 +119,7 @@ export class DuplicatePageListEntryComponent implements OnInit {
         page.deleted = false;
       },
       (error: Error) => {
-        this.errors_service.send_error_message(error.message);
-        console.log('ERROR:' + error.message);
+        this.errors_service.show_error_message(error.message, error);
       },
       () => {
         this.update_all_are_deleted();

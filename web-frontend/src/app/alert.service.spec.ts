@@ -16,16 +16,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.package
  * org.comixed;
  */
+import {TestBed, inject} from '@angular/core/testing';
 
-import {Injectable, EventEmitter} from '@angular/core';
+import {AlertService} from './alert.service';
 
-@Injectable()
-export class ErrorService {
-  error_messages: EventEmitter<string> = new EventEmitter();
+describe('AlertService', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [AlertService]
+    });
+  });
 
-  constructor() {}
-
-  send_error_message(message: string): void {
-    this.error_messages.emit(message);
-  }
-}
+  it('should be created', inject([AlertService], (service: AlertService) => {
+    expect(service).toBeTruthy();
+  }));
+});

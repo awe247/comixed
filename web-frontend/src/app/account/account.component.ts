@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 
 import {ComicService} from '../comic/comic.service';
-import {ErrorService} from '../error.service';
+import {AlertService} from '../alert.service';
 
 @Component({
   selector: 'app-account',
@@ -12,17 +12,15 @@ export class AccountComponent implements OnInit {
   username;
   password = '';
   password_check = '';
-  message = '';
-  has_error = false;
   password_error = '';
 
   constructor(
-    private comicService: ComicService,
-    private errorsService: ErrorService,
+    private comic_service: ComicService,
+    private alert_service: AlertService,
   ) {}
 
   ngOnInit() {
-    this.username = this.comicService.getUsername();
+    this.username = this.comic_service.getUsername();
   }
 
   passesPasswordValidation(): boolean {
@@ -36,31 +34,25 @@ export class AccountComponent implements OnInit {
   }
 
   updateUsername(): void {
-    this.comicService.change_username(this.username).subscribe(
+    this.comic_service.change_username(this.username).subscribe(
       (response: Response) => {
         this.password_error = '';
-        this.message = 'Username updated...';
-        this.has_error = false;
+        this.alert_service.show_info_message(`Your username has been updated to ${this.username}...`);
       },
       (error: Error) => {
-        console.log('ERROR:', error.message);
-        this.message = 'Failed to update username...';
-        this.has_error = true;
+        this.alert_service.show_error_message('Unable to update your username...', error);
       }
     );
   }
 
   updatePassword(): void {
-    this.comicService.change_password(this.password).subscribe(
+    this.comic_service.change_password(this.password).subscribe(
       (response: Response) => {
         this.password_error = '';
-        this.message = 'Password updated...';
-        this.has_error = false;
+        this.alert_service.show_info_message('Your password has been updated...');
       },
       (error: Error) => {
-        console.log('ERROR:', error.message);
-        this.message = 'Failed to update password...';
-        this.has_error = true;
+        this.alert_service.show_error_message('Unable to update your password...', error);
       }
     );
   }

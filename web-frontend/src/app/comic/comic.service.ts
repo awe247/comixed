@@ -27,7 +27,7 @@ import {Subject} from 'rxjs/Subject';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
 import {User} from '../user.model';
-import {ErrorService} from '../error.service';
+import {AlertService} from '../alert.service';
 import {Comic} from './comic.model';
 import {Page} from './page.model';
 import {PageType} from './page-type.model';
@@ -44,7 +44,10 @@ export class ComicService {
   private fetching_comics = false;
   private user: User = new User();
 
-  constructor(private http: HttpClient, private errorsService: ErrorService) {
+  constructor(
+    private http: HttpClient,
+    private alert_service: AlertService,
+  ) {
     this.monitor_authentication_status();
     this.monitor_remote_comic_list();
   }
@@ -88,8 +91,7 @@ export class ComicService {
             this.fetching_comics = false;
           },
           error => {
-            this.errorsService.send_error_message('Failed to get the list of comics...');
-            console.log('ERROR:', error.message);
+            this.alert_service.show_error_message('Failed to get the list of comics...', error);
             this.fetching_comics = false;
           });
       }
@@ -222,8 +224,7 @@ export class ComicService {
         callback && callback();
       },
       error => {
-        console.log('ERROR: ' + error.message);
-        this.errorsService.send_error_message('Login failure');
+        this.alert_service.show_error_message('Login failure', error);
         this.user = new User();
       });
   }
@@ -261,8 +262,7 @@ export class ComicService {
         console.log('Preference saved: ' + name + '=' + value);
       },
       (error: Error) => {
-        console.log('ERROR:', error.message);
-        this.errorsService.send_error_message('Failed to set user preference: ' + name + '=' + value);
+        this.alert_service.show_error_message('Failed to set user preference: ' + name + '=' + value, error);
       }
     );
   }
