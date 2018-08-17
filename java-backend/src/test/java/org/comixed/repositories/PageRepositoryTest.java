@@ -21,6 +21,8 @@ package org.comixed.repositories;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -53,6 +55,8 @@ public class PageRepositoryTest
 {
     private static final Long BLOCKED_PAGE_ID = 1000L;
     private static final Long UNBLOCKED_PAGE_ID = 1001L;
+    private static final String TEST_DUPLICATE_PAGE_HASH = "12346";
+    private static final String TEST_UNKNOWN_PAGE_HASH = "FEDCBA9876543210";
 
     @Autowired
     private PageRepository repository;
@@ -89,5 +93,51 @@ public class PageRepositoryTest
         Page result = repository.findOne(UNBLOCKED_PAGE_ID);
 
         assertFalse(result.isBlocked());
+    }
+
+    @Test
+    public void testGetDuplicatePageHashes()
+    {
+        List<String> result = repository.getDuplicatePageHashes();
+
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(1, result.size());
+        assertEquals(TEST_DUPLICATE_PAGE_HASH, result.get(0));
+    }
+
+    @Test
+    public void testFindAllByHashForNonexistentHash()
+    {
+        List<Page> result = repository.findAllByHash(TEST_UNKNOWN_PAGE_HASH);
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testFindAllByHash()
+    {
+        List<Page> result = repository.findAllByHash(TEST_DUPLICATE_PAGE_HASH);
+
+        assertNotNull(result);
+        assertEquals(3, result.size());
+    }
+
+    @Test
+    public void testFindFirstByHashForNonexistentHash()
+    {
+        Page result = repository.findFirstByHash(TEST_UNKNOWN_PAGE_HASH);
+
+        assertNull(result);
+    }
+
+    @Test
+    public void testFindFirstByHash()
+    {
+        Page result = repository.findFirstByHash(TEST_DUPLICATE_PAGE_HASH);
+
+        assertNotNull(result);
+        assertEquals(TEST_DUPLICATE_PAGE_HASH, result.getHash());
     }
 }

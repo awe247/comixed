@@ -96,6 +96,18 @@ public class PageController
         }
     }
 
+    private ResponseEntity<InputStreamResource> encodePageContent(Page page)
+    {
+        byte[] content = page.getContent();
+
+        this.logger.debug("Returning {} bytes", content.length);
+
+        InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(content));
+        return ResponseEntity.ok().contentLength(content.length)
+                             .header("Content-Disposition", "attachment; filename=\"" + page.getFilename() + "\"")
+                             .contentType(MediaType.parseMediaType("application/x-cbr")).body(resource);
+    }
+
     @RequestMapping(value = "/comics/{id}/pages",
                     method = RequestMethod.GET)
     @JsonView(View.List.class)
@@ -128,16 +140,15 @@ public class PageController
         return this.pageRepository.getDuplicatePageCount();
     }
 
-    @RequestMapping(value = "/pages/duplicates",
+    @RequestMapping(value = "/pages/duplicates/hashes",
                     method = RequestMethod.GET)
-    @JsonView(View.Details.class)
-    public List<Page> getDuplicatePages()
+    public List<String> getDuplicatePageHashes()
     {
-        this.logger.debug("Getting the list of duplicate pages");
+        this.logger.debug("Fetching the list of duplicate page hashes");
 
-        List<Page> result = this.pageRepository.getDuplicatePageList();
+        List<String> result = this.pageRepository.getDuplicatePageHashes();
 
-        this.logger.debug("Returning {} duplicate pages", result.size());
+        this.logger.debug("Retrieved {} hashes", result.size());
 
         return result;
     }
@@ -188,16 +199,38 @@ public class PageController
             this.logger.debug("No such page: id={}", id);
             return null;
         }
-        else
-        {
-            this.logger.debug("Returning {} bytes", page.getContent().length);
 
-            byte[] content = page.getContent();
-            InputStreamResource resource = new InputStreamResource(new ByteArrayInputStream(content));
-            return ResponseEntity.ok().contentLength(content.length)
-                                 .header("Content-Disposition", "attachment; filename=\"" + page.getFilename() + "\"")
-                                 .contentType(MediaType.parseMediaType("application/x-cbr")).body(resource);
+        return this.encodePageContent(page);
+    }
+
+    @RequestMapping(value = "/pages/hashes/{hash}/content",
+                    method = RequestMethod.GET)
+    public ResponseEntity<InputStreamResource> getPageContentForHash(@PathVariable("hash") String hash)
+    {
+        this.logger.debug("Getting first page content for hash: {}", hash);
+
+        Page page = this.pageRepository.findFirstByHash(hash);
+
+        if (page == null)
+        {
+            this.logger.debug("No page found");
+            return null;
         }
+
+        return this.encodePageContent(page);
+    }
+
+    @RequestMapping(value = "/pages/hashes/{hash}",
+                    method = RequestMethod.GET)
+    public List<Page> getPagesForHash(@PathVariable("hash") String hash)
+    {
+        this.logger.debug("Getting occurances of page hash: {}", hash);
+
+        List<Page> result = this.pageRepository.findAllByHash(hash);
+
+        this.logger.debug("Returning count={}", result);
+
+        return result;
     }
 
     private List<Page> getPagesForComic(long id)
