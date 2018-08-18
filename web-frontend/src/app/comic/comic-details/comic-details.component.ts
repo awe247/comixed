@@ -36,8 +36,12 @@ import {PageType} from '../page-type.model';
 })
 export class ComicDetailsComponent implements OnInit, OnDestroy {
   comic: Comic;
+  title_text: string;
+  subtitle_text: string;
   sub: any;
   cover_url = '';
+  show_summary = false;
+  show_notes = false;
   show_characters = false;
   show_teams = false;
   show_story_arcs = false;
@@ -74,6 +78,8 @@ export class ComicDetailsComponent implements OnInit, OnDestroy {
         (comic: Comic) => {
           this.comic = comic;
           this.cover_url = this.comic_service.get_url_for_page_by_comic_index(this.comic.id, 0);
+          this.title_text = this.comic_service.get_issue_label_text_for_comic(this.comic);
+          this.subtitle_text = this.comic_service.get_issue_content_label_for_comic(this.comic);
         },
         error => {
           this.alert_service.show_error_message('Error while retrieving comic...', error);
@@ -87,6 +93,34 @@ export class ComicDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.sub.unsubscribe();
+  }
+
+  get_story_arc_badge_text(): string {
+    return `${(this.comic.story_arcs || []).length}`;
+  }
+
+  has_notes(): boolean {
+    return this.comic.notes && this.comic.notes.length > 0;
+  }
+
+  has_characters(): boolean {
+    return (this.comic.characters || []).length > 0;
+  }
+
+  has_teams(): boolean {
+    return (this.comic.teams || []).length > 0;
+  }
+
+  has_story_arcs(): boolean {
+    return this.comic.story_arcs && this.comic.story_arcs.length > 0;
+  }
+
+  has_locations(): boolean {
+    return (this.comic.locations || []).length > 0;
+  }
+
+  page_is_cover(page: Page): boolean {
+    return this.comic.pages[0].id === page.id;
   }
 
   getImageURL(page_id: number): string {
