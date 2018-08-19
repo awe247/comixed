@@ -26,6 +26,7 @@ import {
 import {ComicService} from '../comic.service';
 import {UserService} from '../../user.service';
 import {AlertService} from '../../alert.service';
+import {Comic} from '../comic.model';
 import {Page} from '../page.model';
 import {PageType} from '../page-type.model';
 
@@ -36,6 +37,7 @@ import {PageType} from '../page-type.model';
 })
 export class PageDetailsComponent implements OnInit {
   @Input() page: Page;
+  @Input() comic: Comic;
   page_types: PageType[];
   delete_page_title = 'Delete This Page?';
   delete_page_message = 'Are you sure you want to delete this page?';
@@ -88,9 +90,14 @@ export class PageDetailsComponent implements OnInit {
   }
 
   delete_page(): void {
+    // if this page is already deleted, then return
+    if (this.page.deleted) {
+      return;
+    }
     this.comic_service.mark_page_as_deleted(this.page).subscribe(
       (response: Response) => {
         this.page.deleted = true;
+        this.comic.deleted_page_count = this.comic.deleted_page_count + 1;
       },
       (error: Error) => {
         this.alert_service.show_error_message('Unable to delete page...', error);
@@ -99,9 +106,14 @@ export class PageDetailsComponent implements OnInit {
   }
 
   undelete_page(): void {
+    // if this page isn't deleted then exit
+    if (this.page.deleted === false) {
+      return;
+    }
     this.comic_service.mark_page_as_undeleted(this.page).subscribe(
       (response: Response) => {
         this.page.deleted = false;
+        this.comic.deleted_page_count = this.comic.deleted_page_count - 1;
       },
       (error: Error) => {
         this.alert_service.show_error_message('Unable to undelete page...', error);
@@ -110,9 +122,14 @@ export class PageDetailsComponent implements OnInit {
   }
 
   block_page(): void {
+    // don't block a blocked page
+    if (this.page.blocked) {
+      return;
+    }
     this.comic_service.block_page(this.page.hash).subscribe(
       (response: Response) => {
         this.page.blocked = true;
+        this.comic.blocked_page_count = this.comic.blocked_page_count + 1;
         this.comic_service.reload_comics();
       },
       (error: Error) => {
@@ -122,9 +139,14 @@ export class PageDetailsComponent implements OnInit {
   }
 
   unblock_page(): void {
+    // don't unblock a page that's not blocked
+    if (this.page.blocked === false) {
+      return;
+    }
     this.comic_service.unblock_page(this.page.hash).subscribe(
       (response: Response) => {
         this.page.blocked = false;
+        this.comic.blocked_page_count = this.comic.blocked_page_count - 1;
         this.comic_service.reload_comics();
       },
       (error: Error) => {

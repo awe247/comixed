@@ -47,6 +47,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.io.FilenameUtils;
 import org.comixed.library.adaptors.ArchiveType;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.slf4j.Logger;
@@ -217,6 +218,11 @@ public class Comic
     @JsonIgnore
     private File backingFile;
 
+    @Formula(value = "SELECT COUNT(*) FROM pages p WHERE p.comic_id = id AND p.hash in (SELECT d.hash FROM blocked_page_hashes d)")
+    @JsonProperty("blocked_page_count")
+    @JsonView(View.Details.class)
+    private int blockedPageCount;
+
     /**
      * Adds a character to the comic.
      *
@@ -384,6 +390,16 @@ public class Comic
     }
 
     /**
+     * Returns the number of blocked pages for the comic.
+     *
+     * @return the blocked page count
+     */
+    public int getBlockedPageCount()
+    {
+        return this.blockedPageCount;
+    }
+
+    /**
      * Returns the character reference at the given index.
      *
      * @param index
@@ -467,6 +483,29 @@ public class Comic
     public Date getDateAdded()
     {
         return this.dateAdded;
+    }
+
+    /**
+     * Returns the number of pages marked as deleted in this comic.
+     *
+     * @return the deleted page count
+     */
+    @Transient
+    @JsonProperty("deleted_page_count")
+    @JsonView(View.Details.class)
+    public int getDeletedPageCount()
+    {
+        int result = 0;
+
+        for (Page page : this.pages)
+        {
+            if (page.isMarkedDeleted())
+            {
+                result++;
+            }
+        }
+
+        return result;
     }
 
     /**
