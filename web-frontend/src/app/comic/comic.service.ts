@@ -175,9 +175,13 @@ export class ComicService {
   }
 
   import_files_into_library(filenames: string[], delete_blocked_pages: boolean): Observable<any> {
-    filenames.forEach((filename, index, source) => source[index] = filename.replace(',', '%2C'));
+    filenames.forEach((filename, index, source) => source[index] = this.encode_filename(filename));
     const params = new HttpParams().set('filenames', filenames.toString()).set('delete_blocked_pages', delete_blocked_pages.toString());
     return this.http.post(`${this.api_url}/files/import`, params);
+  }
+
+  encode_filename(filename: string): string {
+    return filename.replace(/,/g, '%2C').replace(/#/g, '%23').replace(/&/g, '%26');
   }
 
   get_number_of_pending_imports(): Observable<any> {
@@ -202,7 +206,7 @@ export class ComicService {
 
   get_cover_url_for_file(filename: string): string {
     // not fond of this, but encodeURI was NOT doing it for me...
-    const encoded_filename = filename.replace('#', '%23').replace('&', '%26');
+    const encoded_filename = this.encode_filename(filename);
     return `${this.api_url}/files/import/cover?filename=` + encoded_filename;
   }
 
