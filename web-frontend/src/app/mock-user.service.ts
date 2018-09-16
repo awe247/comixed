@@ -1,6 +1,6 @@
 /*
  * ComiXed - A digital comic book library management application.
- * Copyright (C) 2017, The ComiXed Project
+ * Copyright (C) 2018, The ComiXed Project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,32 +17,18 @@
  * org.comixed;
  */
 
-import {
-  Injectable,
-  EventEmitter,
-} from '@angular/core';
+import {User} from './user.model';
 
-@Injectable()
-export class AlertService {
-  error_messages: EventEmitter<string> = new EventEmitter();
-  info_messages: EventEmitter<string> = new EventEmitter();
-  busy_messages: EventEmitter<string> = new EventEmitter();
-
-  constructor() {}
-
-  show_info_message(message: string): void {
-    this.info_messages.emit(message);
+export class MockUserService {
+  is_authenticated(): boolean {
+    return false;
   }
 
-  show_error_message(message: string, error: Error): void {
-    this.error_messages.emit(message);
-    console.log('ERROR:', message);
-    if (error) {
-      console.log('Context:', error);
-    }
+  is_admin(): boolean {
+    return false;
   }
 
-  show_busy_message(message: string): void {
-    this.busy_messages.emit(message);
+  get_user(): User {
+    return null;
   }
 }

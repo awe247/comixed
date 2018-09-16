@@ -17,32 +17,13 @@
  * org.comixed;
  */
 
-import {
-  Injectable,
-  EventEmitter,
-} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 
-@Injectable()
-export class AlertService {
-  error_messages: EventEmitter<string> = new EventEmitter();
-  info_messages: EventEmitter<string> = new EventEmitter();
-  busy_messages: EventEmitter<string> = new EventEmitter();
+export class MockComicService {
+  library_comic_count = 0;
 
-  constructor() {}
-
-  show_info_message(message: string): void {
-    this.info_messages.emit(message);
-  }
-
-  show_error_message(message: string, error: Error): void {
-    this.error_messages.emit(message);
-    console.log('ERROR:', message);
-    if (error) {
-      console.log('Context:', error);
-    }
-  }
-
-  show_busy_message(message: string): void {
-    this.busy_messages.emit(message);
+  get_library_comic_count(): Observable<any> {
+    return Observable.of(this.library_comic_count);
   }
 }

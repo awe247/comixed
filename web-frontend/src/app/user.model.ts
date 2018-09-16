@@ -21,7 +21,7 @@ export class Role {
   name: string;
 
   constructor(
-    name: string,
+    name?: string,
   ) {
     this.name = name;
   }
@@ -32,8 +32,8 @@ export class Preference {
   value: string;
 
   constructor(
-    name: string,
-    value: string,
+    name?: string,
+    value?: string,
   ) {
     this.name = name;
     this.value = value;
