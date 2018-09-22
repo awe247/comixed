@@ -27,7 +27,6 @@ import org.comixed.web.model.ComicVolume;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -100,31 +99,22 @@ public class ComicVineVolumesReponseProcessor
             return this.numberOfTotalResults;
         }
 
-        public List<ComicVineVolume> getVolumes()
+        public List<ComicVolume> getVolumes()
         {
-            return this.volumes;
-        }
+            List<ComicVolume> result = new ArrayList<>();
 
-        public List<ComicVolume> transform()
-        {
-            List<ComicVolume> result = new ArrayList<ComicVolume>();
-
-            for (ComicVineVolume volume : this.volumes)
+            for (ComicVineVolume comicVineVolume : this.volumes)
             {
-                /*
-                 * there is an existing bug in the ComicVine APIs where it's
-                 * returning 1 less than the total number of issues for a volume
-                 */
-                ComicVolume entry = new ComicVolume();
+                ComicVolume volume = new ComicVolume();
 
-                entry.setId(volume.getId());
-                entry.setName(volume.getName());
-                entry.setIssueCount(volume.getIssueCount() + 1);
-                entry.setImageURL(volume.getImageURL());
-                entry.setStartYear(volume.getStartYear());
-                entry.setPublisher(volume.getPublisher());
+                volume.setId(comicVineVolume.id);
+                volume.setIssueCount(comicVineVolume.getIssueCount());
+                volume.setName(comicVineVolume.getName());
+                volume.setImageURL(comicVineVolume.getImageURL());
+                volume.setStartYear(comicVineVolume.getStartYear());
+                volume.setPublisher(comicVineVolume.getPublisher());
 
-                result.add(entry);
+                result.add(volume);
             }
 
             return result;
@@ -140,7 +130,7 @@ public class ComicVineVolumesReponseProcessor
      * Processes the supplied response content, appending the retrieved volumes
      * into the supplied list.
      * 
-     * @param volumes
+     * @param list
      *            the list of comic volumes
      * @param content
      *            the response content
@@ -148,7 +138,7 @@ public class ComicVineVolumesReponseProcessor
      * @throws ComicVineAdaptorException
      *             if an error occurs
      */
-    public boolean process(List<ComicVolume> volumes, byte[] content) throws ComicVineAdaptorException
+    public boolean process(List<ComicVolume> list, byte[] content) throws ComicVineAdaptorException
     {
         boolean result = true;
 
@@ -159,7 +149,7 @@ public class ComicVineVolumesReponseProcessor
             ComicVineVolumesReponseContainer response = objectMapper.readValue(content,
                                                                                ComicVineVolumesReponseContainer.class);
 
-            volumes.addAll(response.transform());
+            list.addAll(response.getVolumes());
             result = response.isLastPage();
         }
         catch (IOException error)
