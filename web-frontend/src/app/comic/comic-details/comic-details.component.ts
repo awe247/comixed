@@ -17,17 +17,21 @@
  * org.comixed;
  */
 
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
-import {ActivatedRoute, Router} from '@angular/router';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+} from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import {Comic} from '../comic.model';
-import {Page} from '../page.model';
-import {ComicService} from '../comic.service';
-import {AlertService} from '../../alert.service';
-import {ReadViewerComponent} from '../read-viewer/read-viewer.component';
-import {PageDetailsComponent} from '../page-details/page-details.component';
-import {PageType} from '../page-type.model';
+import { Comic } from '../comic.model';
+import { Page } from '../page.model';
+import { ComicService } from '../comic.service';
+import { AlertService } from '../../alert.service';
+import { ReadViewerComponent } from '../read-viewer/read-viewer.component';
+import { PageDetailsComponent } from '../page-details/page-details.component';
+import { PageType } from '../page-type.model';
 
 @Component({
   selector: 'app-comic-details',
@@ -40,7 +44,9 @@ export class ComicDetailsComponent implements OnInit, OnDestroy {
   subtitle_text: string;
   sub: any;
   cover_url = '';
+  show_credits = false;
   show_summary = false;
+  show_description = false;
   show_notes = false;
   show_characters = false;
   show_teams = false;
@@ -49,13 +55,14 @@ export class ComicDetailsComponent implements OnInit, OnDestroy {
   page_types: Array<PageType> = [];
   current_page: Page;
   private show_page_details = false;
+  protected editing = false;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private comic_service: ComicService,
     private alert_service: AlertService,
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.alert_service.show_busy_message('Retrieving comic details...');
@@ -135,5 +142,17 @@ export class ComicDetailsComponent implements OnInit, OnDestroy {
 
   getDownloadLink(): string {
     return this.comic_service.get_download_link_for_comic(this.comic.id);
+  }
+
+  start_editing(): void {
+    this.editing = true;
+  }
+
+  stop_editing(): void {
+    const that = this;
+    this.editing = false;
+    this.comic = this.comic_service.all_comics.find((element: Comic) => {
+      return element.id === that.comic.id;
+    });
   }
 }

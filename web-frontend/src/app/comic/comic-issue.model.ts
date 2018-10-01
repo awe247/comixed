@@ -1,6 +1,6 @@
 /*
  * ComiXed - A digital comic book library management application.
- * Copyright (C) 2017, The ComiXed Project
+ * Copyright (C) 2018, The ComiXed Project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,16 +17,32 @@
  * org.comixed;
  */
 
-package org.comixed.web;
+import { Page } from './page.model';
 
-/**
- * <code>ComicVineWebRequest</code> defines a type for sending requests to the
- * ComicVine web interface.
- * 
- * @author Darryl L. Pierce
- *
- */
-public interface ComicVineWebRequest
-{
-    String COMICVINE_API_KEY = "web.api.comicvine.api-key";
+export class ComicIssue {
+  id: number;
+  cover_date: string;
+  cover_url: string;
+  issue_number: number;
+  name; string;
+  volume_name: string;
+  volume_id: number;
+
+  constructor(
+    id?: number,
+    cover_date?: string,
+    cover_url?: string,
+    issue_number?: number,
+    name?: string,
+    volume_name?: string,
+    volume_id?: number
+  ) {
+    this.id = id;
+    this.cover_date = cover_date;
+    this.cover_url = cover_url;
+    this.issue_number = issue_number;
+    this.name = name;
+    this.volume_name = volume_name;
+    this.volume_id = volume_id;
+  }
 }

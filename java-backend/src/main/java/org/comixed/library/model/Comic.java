@@ -23,7 +23,9 @@ import java.io.File;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -209,10 +211,19 @@ public class Comic
 
     @OneToMany(mappedBy = "comic",
                cascade = CascadeType.ALL,
-               fetch = FetchType.EAGER)
+               fetch = FetchType.EAGER,
+               orphanRemoval = true)
     @OrderColumn(name = "index")
     @JsonView(View.Details.class)
     List<Page> pages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "comic",
+               cascade = CascadeType.ALL,
+               fetch = FetchType.EAGER,
+               orphanRemoval = true)
+    @JsonProperty("credits")
+    @JsonView(View.Details.class)
+    private Set<Credit> credits = new HashSet<>();
 
     @Transient
     @JsonIgnore
@@ -240,6 +251,15 @@ public class Comic
         this.characters.add(character);
     }
 
+    public void addCredit(String name, String role)
+    {
+        this.logger.debug("Adding a credit: name={} role={}", name, role);
+        Credit credit = new Credit(name, role);
+
+        credit.setComic(this);
+        this.credits.add(credit);
+    }
+
     /**
      * Adds a new location reference to the comic.
      *
@@ -258,31 +278,19 @@ public class Comic
     }
 
     /**
-     * Adds a new page to the comic.
+     * Adds a new offset to the comic.
      *
      * @param index
      *            the index
      *
-     * @param page
-     *            the page
+     * @param offset
+     *            the offset
      */
     public void addPage(int index, Page page)
     {
-        this.logger.debug("Adding page: index=" + index + " hash=" + page.getHash());
+        this.logger.debug("Adding offset: index=" + index + " hash=" + page.getHash());
         page.setComic(this);
         this.pages.add(index, page);
-    }
-
-    /**
-     * Adds a page to the end of the set of pages.
-     *
-     * @param page
-     *            the page
-     */
-    public void addPage(Page page)
-    {
-        this.logger.debug("Adding page: {}", page.getFilename());
-        this.pages.add(page);
     }
 
     /**
@@ -328,6 +336,15 @@ public class Comic
     }
 
     /**
+     * Removes all associated credits.
+     */
+    public void clearCredits()
+    {
+        this.logger.debug("Clearing credits");
+        this.credits.clear();
+    }
+
+    /**
      * Removes all location references from the comic.
      */
     public void clearLocations()
@@ -346,14 +363,23 @@ public class Comic
     }
 
     /**
-     * Deletes a page from the comic.
+     * Removes all team references from the comic.
+     */
+    public void clearTeams()
+    {
+        this.logger.debug("Clearing out teams");
+        this.teams.clear();
+    }
+
+    /**
+     * Deletes a offset from the comic.
      *
      * @param index
-     *            the page index
+     *            the offset index
      */
     public void deletePage(int index)
     {
-        this.logger.debug("Deleting page: index=" + index);
+        this.logger.debug("Deleting offset: index=" + index);
         this.pages.remove(index);
     }
 
@@ -382,7 +408,7 @@ public class Comic
     /**
      * Returns the number of blocked pages for the comic.
      *
-     * @return the blocked page count
+     * @return the blocked offset count
      */
     public int getBlockedPageCount()
     {
@@ -450,7 +476,7 @@ public class Comic
         /*
          * if there are no pages or the underlying file is missing then show the
          * missing
-         * page image
+         * offset image
          */
         return this.pages.isEmpty() || this.isMissing() ? null : this.pages.get(0);
     }
@@ -478,7 +504,7 @@ public class Comic
     /**
      * Returns the number of pages marked as deleted in this comic.
      *
-     * @return the deleted page count
+     * @return the deleted offset count
      */
     @Transient
     @JsonProperty("deleted_page_count")
@@ -610,22 +636,22 @@ public class Comic
     }
 
     /**
-     * Returns the page at the given index.
+     * Returns the offset at the given index.
      *
      * @param index
-     *            the page index
-     * @return the page
+     *            the offset index
+     * @return the offset
      */
     public Page getPage(int index)
     {
-        this.logger.debug("Returning page: index=" + index);
+        this.logger.debug("Returning offset: index=" + index);
         return this.pages.get(index);
     }
 
     /**
      * Returns the number of pages associated with this comic.
      *
-     * @return the page count
+     * @return the offset count
      */
     @JsonProperty("page_count")
     @JsonView(View.List.class)
@@ -645,7 +671,7 @@ public class Comic
     }
 
     /**
-     * Returns the page for the given filename.
+     * Returns the offset for the given filename.
      *
      * @param filename
      * @return the {@link Page} or null
@@ -807,11 +833,11 @@ public class Comic
     }
 
     /**
-     * Returns whether a page with the given filename is present.
+     * Returns whether a offset with the given filename is present.
      *
      * @param filename
      *            the filename
-     * @return true if such a page exists
+     * @return true if such a offset exists
      */
     public boolean hasPageWithFilename(String filename)
     {
@@ -943,7 +969,7 @@ public class Comic
     public void setIssueNumber(String issueNumber)
     {
         this.logger.debug("Setting issue number=" + issueNumber);
-        if (issueNumber != null && issueNumber.startsWith("0"))
+        if ((issueNumber != null) && issueNumber.startsWith("0"))
         {
             this.logger.debug("Removing leading 0s from issue number");
             while (issueNumber.startsWith("0"))

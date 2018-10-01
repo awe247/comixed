@@ -1,6 +1,6 @@
 /*
  * ComiXed - A digital comic book library management application.
- * Copyright (C) 2017, The ComiXed Project
+ * Copyright (C) 2018, The ComiXed Project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,22 +19,18 @@
 
 package org.comixed.web;
 
-import java.io.InputStream;
+import org.springframework.stereotype.Component;
 
-/**
- * <code>WebResponseHandler</code> defines a type that receives the response
- * from a {@link WebRequest} and responds appropriately to the content.
- * 
- * @author Darryl L. Pierce
- *
- */
-public interface WebResponseHandler
+@Component
+public class ComicVineIssueDetailsWebRequest extends AbstractComicVineWebRequest
 {
-    /**
-     * Receives the content of a web request.
-     * 
-     * @param input
-     *            the content source stream
-     */
-    void processContent(InputStream input);
+    public ComicVineIssueDetailsWebRequest()
+    {
+        super("issue");
+    }
+
+    public void setIssueNumber(String issueNumber)
+    {
+        this.endpoint = "issue/4000-" + issueNumber;
+    }
 }
