@@ -49,6 +49,12 @@ body {
   opacity: 0.8;
 }
 
+.comic-cover-img-container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
 .comic-selected {
 	background-color: #339933;
 }
