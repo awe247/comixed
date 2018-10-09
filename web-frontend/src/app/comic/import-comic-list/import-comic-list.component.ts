@@ -186,14 +186,6 @@ export class ImportComicListComponent implements OnInit {
     }
   }
 
-  set_show_all_comics(): void {
-    this.show_selections_only = false;
-  }
-
-  set_show_selected_comics(): void {
-    this.show_selections_only = true;
-  }
-
   show_details(file_detail: FileDetails): void {
     if (this.selected_file_detail !== null && this.selected_file_detail.filename === file_detail.filename) {
       this.selected_file_detail = null;
@@ -211,5 +203,14 @@ export class ImportComicListComponent implements OnInit {
   set_page_size(page_size: any): void {
     this.use_page_size = parseInt(page_size.target.value, 10);
     this.user_service.set_user_preference('import_page_size', `${this.use_page_size}`);
+  }
+
+  toggle_blocked_page_deletion(): void {
+    this.delete_blocked_pages = !this.delete_blocked_pages;
+    this.alert_service.show_info_message(`Blocked pages will ${this.delete_blocked_pages ? '' : 'not '} be deleted...`);
+  }
+
+  toggle_show_selected(): void {
+    this.show_selections_only = !this.show_selections_only;
   }
 }
