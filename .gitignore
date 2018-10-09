@@ -64,5 +64,5 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-/java-backend/.vscode/launch.json
-/java-backend/.vscode/launch.test.json
+java-backend/.vscode/launch.json
+java-backend/.vscode/launch.test.json

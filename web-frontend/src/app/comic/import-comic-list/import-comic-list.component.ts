@@ -17,10 +17,15 @@
  * org.comixed;
  */
 
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators, AbstractControl } from '@angular/forms';
+import { Component } from '@angular/core';
+import { OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { FormBuilder } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
+import { FormArray } from '@angular/forms';
+import { Validators } from '@angular/forms';
+import { AbstractControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-
 import { UserService } from '../../user.service';
 import { FileDetails } from '../file-details.model';
 import { ComicService } from '../comic.service';
@@ -45,7 +50,6 @@ export class ImportComicListComponent implements OnInit {
   pending_imports = 0;
   waiting_on_imports = false;
   cover_size: number;
-  protected page_size: BehaviorSubject<number>;
   protected use_page_size: number;
   current_page = 1;
   selected_file_count = 0;
@@ -60,11 +64,23 @@ export class ImportComicListComponent implements OnInit {
     private comic_service: ComicService,
     private alert_service: AlertService,
     builder: FormBuilder,
+    private activeRoute: ActivatedRoute,
   ) {
     this.directory_form = builder.group({
       'directory': ['', Validators.required],
     });
     this.selected_file_detail = null;
+    activeRoute.queryParams.subscribe(params => {
+      this.reload_page_size(params['page_size']);
+    });
+  }
+
+  private reload_page_size(page_size: string): void {
+    if (page_size) {
+      this.use_page_size = parseInt(page_size, 10);
+    } else {
+      this.use_page_size = parseInt(this.user_service.get_user_preference('import_page_size', '10'), 10);
+    }
   }
 
   ngOnInit() {
@@ -88,18 +104,13 @@ export class ImportComicListComponent implements OnInit {
           that.waiting_on_imports = false;
         });
     }, 250);
-    this.cover_size = parseInt(this.user_service.get_user_preference('cover_size', '128'), 10);
-    this.use_page_size = 10;
-    this.page_size = new BehaviorSubject<number>(this.use_page_size);
-    this.page_size.subscribe(
-      (page_size: number) => {
-        this.use_page_size = page_size;
-      });
+    this.cover_size = parseInt(this.user_service.get_user_preference('cover_size', '200'), 10);
   }
 
   on_load(): void {
     const that = this;
     this.alert_service.show_busy_message('Fetching List Of Comic Files...');
+    this.selected_file_detail = null;
     const directory = this.directory;
     this.comic_service.get_files_under_directory(directory).subscribe(
       (files: FileDetails[]) => {
@@ -176,14 +187,6 @@ export class ImportComicListComponent implements OnInit {
     }
   }
 
-  set_show_all_comics(): void {
-    this.show_selections_only = false;
-  }
-
-  set_show_selected_comics(): void {
-    this.show_selections_only = true;
-  }
-
   show_details(file_detail: FileDetails): void {
     if (this.selected_file_detail !== null && this.selected_file_detail.filename === file_detail.filename) {
       this.selected_file_detail = null;
@@ -196,5 +199,19 @@ export class ImportComicListComponent implements OnInit {
     }
 
     console.log('this.selected_file_detail:', this.selected_file_detail);
+  }
+
+  set_page_size(page_size: any): void {
+    this.use_page_size = parseInt(page_size.target.value, 10);
+    this.user_service.set_user_preference('import_page_size', `${this.use_page_size}`);
+  }
+
+  toggle_blocked_page_deletion(): void {
+    this.delete_blocked_pages = !this.delete_blocked_pages;
+    this.alert_service.show_info_message(`Blocked pages will ${this.delete_blocked_pages ? '' : 'not '} be deleted...`);
+  }
+
+  toggle_show_selected(): void {
+    this.show_selections_only = !this.show_selections_only;
   }
 }
