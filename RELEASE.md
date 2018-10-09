@@ -1,9 +1,13 @@
 # Release notes.
 
-## Release 0.1
-Our first project release!
-
-### Issues Addressed In This release
+### 2018-07-15: Release 0.1-RC1 
+### 2018-07-23: Release 0.1-RC2
+### 2018-07-29: Release 0.1-RC3
+ * #121  The app should attempt to get the series and issue numbers from the filename for imported comics.
+ * #119  Add a "Quick Start" guide for running the application
+ * #118  Reader without ADMIN role are able to import comics.
+ * #115  NullPointerException when changing username.
+ * #113  When changing the account password, display a message when the passwords don't match.
  * #111  Release candidate contains development application.properties file.
  * #108  Make the library footer global.
  * #105  Need to document default password
