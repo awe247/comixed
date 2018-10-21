@@ -1,6 +1,6 @@
 /*
  * ComiXed - A digital comic book library management application.
- * Copyright (C) 2017, The ComiXed Project
+ * Copyright (C) 2018, The ComiXed Project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,24 +17,32 @@
  * org.comixed;
  */
 
-export class FileDetails {
-  filename: string;
-  base_filename: string;
-  size: number;
-  selected: boolean;
+import {
+  Component,
+  OnInit,
+  Input,
+  Output,
+  EventEmitter,
+} from '@angular/core';
+import { ViewEncapsulation } from '@angular/core';
 
-  constructor(
-    filename?: string,
-    base_filename?: string,
-    size?: number,
-  ) {
-    this.filename = filename;
-    this.base_filename = base_filename;
-    this.size = size;
-    this.selected = false;
-  }
+@Component({
+  selector: 'app-issue-details',
+  templateUrl: './issue-details.component.html',
+  styleUrls: ['./issue-details.component.css'],
+  encapsulation: ViewEncapsulation.None,
+})
+export class IssueDetailsComponent implements OnInit {
+  @Input() title: string;
+  @Input() subtitle: string;
+  @Input() cover_url: string;
+  @Output() close = new EventEmitter<boolean>();
 
-  toggleSelected(): void {
-    this.selected = !this.selected;
+  constructor() { }
+
+  ngOnInit() { }
+
+  close_details(): void {
+    this.close.next(true);
   }
 }

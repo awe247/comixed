@@ -31,7 +31,7 @@ import { FileDetails } from '../file-details.model';
 import { ComicService } from '../comic.service';
 import { AlertService } from '../../alert.service';
 import { ImportComicListEntryComponent } from '../import-comic-list-entry/import-comic-list-entry.component';
-
+import { IssueDetailsComponent } from '../issue/details/issue-details/issue-details.component';
 import { SelectedForImportPipe } from './selected-for-import.pipe';
 
 @Component({
@@ -153,6 +153,7 @@ export class ImportComicListComponent implements OnInit {
 
   import_selected_files(): void {
     const that = this;
+    this.selected_file_detail = null;
     this.importing = true;
     const selected_files = this.file_details.filter(file => file.selected).map(file => file.filename);
     this.alert_service.show_busy_message('Preparing to import ' + selected_files + ' comics...');
