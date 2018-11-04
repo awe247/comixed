@@ -19,21 +19,21 @@
 
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { PageSizeComponent } from '../page-size/page-size.component';
-import { GroupComicsComponent } from '../group-comics/group-comics.component';
-import { GroupByPipe } from '../group-by.pipe';
-import { UserService } from '../../services/user.service';
-import { Comic } from '../comic.model';
-import { ComicService } from '../../services/comic.service';
+import { PageSizeComponent } from '../../page-size/page-size.component';
+import { GroupComicsComponent } from '../../group-comics/group-comics.component';
+import { GroupByPipe } from '../../group-by.pipe';
+import { UserService } from '../../../services/user.service';
+import { Comic } from '../../comic.model';
+import { ComicService } from '../../../services/comic.service';
 import { ComicListEntryComponent } from '../comic-list-entry/comic-list-entry.component';
 import { ComicListGroupComponent } from '../comic-list-group/comic-list-group.component';
-import { SeriesFilterPipe } from '../series-filter.pipe';
-import { AlertService } from '../../services/alert.service';
-import { LibraryCoversComponent } from '../library/library-covers/library-covers.component';
-import { LibraryDetailsComponent } from '../library/library-details/library-details.component';
+import { SeriesFilterPipe } from '../../series-filter.pipe';
+import { AlertService } from '../../../services/alert.service';
+import { LibraryCoversComponent } from '../library-covers/library-covers.component';
+import { LibraryDetailsComponent } from '../library-details/library-details.component';
 
 @Component({
   selector: 'app-comic-list',
@@ -41,6 +41,12 @@ import { LibraryDetailsComponent } from '../library/library-details/library-deta
   styleUrls: ['./comic-list.component.css'],
 })
 export class ComicListComponent implements OnInit {
+  readonly PAGESIZE_PARAMETER = 'pagesize';
+  readonly SORT_PARAMETER = 'sort';
+  readonly GROUP_BY_PARAMETER = 'groupby';
+  readonly TAB_PARAMETER = 'tab';
+  readonly SEARCH_PARAMETER = 'search';
+
   current_tab = 'cover-view';
   protected comics: Comic[];
   protected cover_size: number;
@@ -76,9 +82,13 @@ export class ComicListComponent implements OnInit {
     this.group_by_value = 0;
     this.last_group_label = '';
     route.queryParams.subscribe(params => {
-      this.reload_page_size(params['page_size']);
-      this.reload_sort_order(params['sort_order']);
-      this.reload_group_by(params['group_by']);
+      this.reload_page_size(params[this.PAGESIZE_PARAMETER]);
+      this.reload_sort_order(params[this.SORT_PARAMETER]);
+      this.reload_group_by(params[this.GROUP_BY_PARAMETER]);
+      if (params['tab']) {
+        this.current_tab = params[this.TAB_PARAMETER];
+      }
+      this.update_title_search(params[this.SEARCH_PARAMETER]);
     });
   }
 
@@ -92,6 +102,17 @@ export class ComicListComponent implements OnInit {
 
   set_current_tab(name: string): void {
     this.current_tab = name;
+    this.update_params(this.TAB_PARAMETER, name);
+  }
+
+  private update_params(name: string, value: string): void {
+    const queryParams: Params = Object.assign({}, this.route.snapshot.queryParams);
+    if (value && value.length) {
+      queryParams[name] = value;
+    } else {
+      queryParams[name] = null;
+    }
+    this.router.navigate([], { relativeTo: this.route, queryParams: queryParams });
   }
 
   private reload_page_size(page_size: string): void {
@@ -99,6 +120,7 @@ export class ComicListComponent implements OnInit {
       this.use_page_size = parseInt(page_size, 10);
     } else {
       this.use_page_size = parseInt(this.user_service.get_user_preference('page_size', '10'), 10);
+      this.update_params(this.PAGESIZE_PARAMETER, `${this.use_page_size}`);
     }
   }
 
@@ -111,6 +133,7 @@ export class ComicListComponent implements OnInit {
       }
     } else {
       this.sort_order_value = parseInt(this.user_service.get_user_preference('sort_order', '0'), 10);
+      this.update_params(this.SORT_PARAMETER, `${this.sort_order_value}`);
     }
     this.sort_order = new BehaviorSubject<number>(this.sort_order_value);
   }
@@ -124,6 +147,7 @@ export class ComicListComponent implements OnInit {
       }
     } else {
       this.group_by_value = parseInt(this.user_service.get_user_preference('group_by', '0'), 10);
+      this.update_params(this.GROUP_BY_PARAMETER, `${this.group_by_value}`);
     }
   }
 
@@ -158,6 +182,7 @@ export class ComicListComponent implements OnInit {
     this.sort_order_value = parseInt(sort_order, 10);
     this.comics = this.sort_comics(this.comics);
     this.user_service.set_user_preference('sort_order', `${sort_order}`);
+    this.update_params(this.SORT_PARAMETER, `${this.sort_order_value}`);
   }
 
   sort_comics(comics: Comic[]): Comic[] {
@@ -331,14 +356,23 @@ export class ComicListComponent implements OnInit {
   set_grouping(value: any): void {
     this.group_by_value = parseInt(value.target.value, 10);
     this.user_service.set_user_preference('group_by', `${this.group_by_value}`);
+    this.update_params(this.GROUP_BY_PARAMETER, `${this.group_by_value}`);
   }
 
   set_page_size(value: any): void {
     this.use_page_size = parseInt(value.target.value, 10);
     this.user_service.set_user_preference('page_size', `${this.use_page_size}`);
+    this.update_params(this.PAGESIZE_PARAMETER, `${this.use_page_size}`);
   }
 
   set_current_comic(comic: Comic): void {
     this.current_comic = comic;
+  }
+
+  update_title_search(text: string): void {
+    if (this.title_search !== text) {
+      this.title_search = text;
+    }
+    this.update_params(this.SEARCH_PARAMETER, text);
   }
 }
