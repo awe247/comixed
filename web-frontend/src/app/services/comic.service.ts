@@ -26,12 +26,12 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { UserService } from '../services/user.service';
-import { AlertService } from '../services/alert.service';
-import { Comic } from './comic.model';
-import { Page } from './page.model';
-import { PageType } from './page-type.model';
-import { FileDetails } from './file-details.model';
+import { UserService } from './user.service';
+import { AlertService } from './alert.service';
+import { Comic } from '../comic/comic.model';
+import { Page } from '../comic/page.model';
+import { PageType } from '../comic/page-type.model';
+import { FileDetails } from '../comic/file-details.model';
 
 @Injectable()
 export class ComicService {
@@ -190,8 +190,12 @@ export class ComicService {
     return `${this.api_url}/comics/${comicId}/pages/${index}/content`;
   }
 
+  get_cover_url_for_comic(comic: Comic): string {
+    return `${this.api_url}/comics/${comic.id}/pages/0/content`;
+  }
+
   get_url_for_page_by_hash(hash: string): string {
-    return `${this.api_url}/pages/hashes/${hash}/content`;
+    return `${this.api_url} /pages/hashes / ${hash} /content`;
   }
 
   get_url_for_missing_page(): string {
