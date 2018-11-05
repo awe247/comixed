@@ -41,7 +41,7 @@ export class ComicDetailsEditorComponent implements OnInit {
   protected series: string;
   protected volume: string;
   protected issue_number: string;
-  protected volumes: Array<Volume> = [];
+  protected volumes: Array<Volume>;
   protected issues: Map<string, ComicIssue> = new Map<string, ComicIssue>();
   protected current_volume_index: number;
   protected current_volume: Volume;
@@ -155,7 +155,7 @@ export class ComicDetailsEditorComponent implements OnInit {
   }
 
   show_candidates(): boolean {
-    return (this.volumes.length > 0) && (this.current_volume_index >= 0);
+    return (this.volumes && this.volumes.length > 0) && (this.current_volume_index >= 0);
   }
 
   get_current_issue_image_url(): string {
@@ -201,5 +201,24 @@ export class ComicDetailsEditorComponent implements OnInit {
 
   is_api_key_valid(): boolean {
     return (this.api_key || '').trim().length > 0;
+  }
+
+  is_good_match(volume: Volume): boolean {
+    if (!this.is_perfect_match(volume)) {
+      return this.comic.volume === volume.start_year;
+    }
+
+    return false;
+  }
+
+  is_perfect_match(volume: Volume): boolean {
+    return (
+      (this.comic.volume === volume.start_year) &&
+      (this.comic.series === volume.name)
+    );
+  }
+
+  cancel_volume_selection(): void {
+    this.volumes = null;
   }
 }
