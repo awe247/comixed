@@ -18,12 +18,17 @@
  */
 
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 import { MenubarModule } from 'primeng/menubar';
+import { SidebarModule } from 'primeng/sidebar';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -64,6 +69,7 @@ import { AlertService } from './services/alert.service';
 import { UserService } from './services/user.service';
 import { BusyIndicatorComponent } from './busy-indicator/busy-indicator.component';
 import { MenubarComponent } from './ui/component/menubar/menubar.component';
+import { ImportSidebarComponent } from './ui/component/import/import-sidebar/import-sidebar.component';
 
 @NgModule({
   declarations: [
@@ -98,13 +104,23 @@ import { MenubarComponent } from './ui/component/menubar/menubar.component';
     LibraryDetailsComponent,
     LibraryCoverEntryComponent,
     LibraryCoversComponent,
+    ImportSidebarComponent,
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     NgbModule.forRoot(),
     AppRoutingModule,
     HttpClientModule,
     MenubarModule,
+    SidebarModule,
+    InputTextModule,
+    ButtonModule,
+    CheckboxModule,
+    LoadingModule.forRoot({
+      animationType: ANIMATION_TYPES.pulse,
+      fullScreenBackdrop: true,
+    }),
     CommonModule,
     ComicRoutingModule,
     FormsModule,
