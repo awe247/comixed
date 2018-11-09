@@ -29,6 +29,8 @@ import { SidebarModule } from 'primeng/sidebar';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
+import { DropdownModule } from 'primeng/dropdown';
+import { SliderModule } from 'primeng/slider';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -70,6 +72,7 @@ import { UserService } from './services/user.service';
 import { BusyIndicatorComponent } from './busy-indicator/busy-indicator.component';
 import { MenubarComponent } from './ui/component/menubar/menubar.component';
 import { ImportSidebarComponent } from './ui/component/import/import-sidebar/import-sidebar.component';
+import { LibrarySidebarComponent } from './ui/component/library/library-sidebar/library-sidebar.component';
 
 @NgModule({
   declarations: [
@@ -105,6 +108,7 @@ import { ImportSidebarComponent } from './ui/component/import/import-sidebar/imp
     LibraryCoverEntryComponent,
     LibraryCoversComponent,
     ImportSidebarComponent,
+    LibrarySidebarComponent,
   ],
   imports: [
     BrowserModule,
@@ -117,6 +121,8 @@ import { ImportSidebarComponent } from './ui/component/import/import-sidebar/imp
     InputTextModule,
     ButtonModule,
     CheckboxModule,
+    DropdownModule,
+    SliderModule
     LoadingModule.forRoot({
       animationType: ANIMATION_TYPES.pulse,
       fullScreenBackdrop: true,
