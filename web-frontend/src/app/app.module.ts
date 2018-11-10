@@ -34,6 +34,7 @@ import { SliderModule } from 'primeng/slider';
 import { TabViewModule } from 'primeng/tabview';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
+import { CardModule } from 'primeng/card';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -61,7 +62,7 @@ import { ComicDetailsEditorComponent } from './comic/details/comic-details-edito
 import { IssueDetailsComponent } from './comic/issue/details/issue-details/issue-details.component';
 import { ComicOverviewComponent } from './comic/details/overview/comic-overview/comic-overview.component';
 import { ComicStoryComponent } from './comic/details/story/comic-story/comic-story.component';
-import { ComicCreditsComponent } from './comic/details/credits/comic-credits/comic-credits.component';
+import { ComicCreditsComponent } from './ui/component/comic-credits/comic-credits.component';
 import { ComicPagesComponent } from './comic/details/pages/comic-pages/comic-pages.component';
 import { LibraryDetailsComponent } from './ui/component/library/library-details/library-details.component';
 import { LibraryCoverEntryComponent } from './comic/library/library-cover-entry/library-cover-entry.component';
@@ -131,6 +132,7 @@ import { NotificationsComponent } from './ui/component/notifications/notificatio
     TabViewModule,
     TableModule,
     ToastModule,
+    CardModule,
     LoadingModule.forRoot({
       animationType: ANIMATION_TYPES.pulse,
       fullScreenBackdrop: true,
