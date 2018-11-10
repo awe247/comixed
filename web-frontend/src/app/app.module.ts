@@ -33,6 +33,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { SliderModule } from 'primeng/slider';
 import { TabViewModule } from 'primeng/tabview';
 import { TableModule } from 'primeng/table';
+import { ToastModule } from 'primeng/toast';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -40,6 +41,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoadingModule, ANIMATION_TYPES } from 'ngx-loading';
 import { XhrInterceptor } from './xhr.interceptor';
 import { ComicService } from './services/comic.service';
+import { MessageService } from 'primeng/api';
 import { ImportComicListComponent } from './comic/import-comic-list/import-comic-list.component';
 import { ComicListEntryComponent } from './comic/library/comic-list-entry/comic-list-entry.component';
 import { ComicDetailsComponent } from './comic/details/comic-details.component';
@@ -74,6 +76,7 @@ import { MenubarComponent } from './ui/component/menubar/menubar.component';
 import { ImportSidebarComponent } from './ui/component/import/import-sidebar/import-sidebar.component';
 import { LibrarySidebarComponent } from './ui/component/library/library-sidebar/library-sidebar.component';
 import { LibraryPageComponent } from './ui/page/library/library-page/library-page.component';
+import { NotificationsComponent } from './ui/component/notifications/notifications.component';
 
 @NgModule({
   declarations: [
@@ -110,6 +113,7 @@ import { LibraryPageComponent } from './ui/page/library/library-page/library-pag
     ImportSidebarComponent,
     LibrarySidebarComponent,
     LibraryPageComponent,
+    NotificationsComponent,
   ],
   imports: [
     BrowserModule,
@@ -126,6 +130,7 @@ import { LibraryPageComponent } from './ui/page/library/library-page/library-pag
     SliderModule,
     TabViewModule,
     TableModule,
+    ToastModule,
     LoadingModule.forRoot({
       animationType: ANIMATION_TYPES.pulse,
       fullScreenBackdrop: true,
@@ -150,6 +155,7 @@ import { LibraryPageComponent } from './ui/page/library/library-page/library-pag
     AlertService,
     UserService,
     ComicService,
+    MessageService,
     [
       { provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true }
     ],
