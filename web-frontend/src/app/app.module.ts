@@ -31,15 +31,14 @@ import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DropdownModule } from 'primeng/dropdown';
 import { SliderModule } from 'primeng/slider';
+import { TabViewModule } from 'primeng/tabview';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoadingModule, ANIMATION_TYPES } from 'ngx-loading';
 import { XhrInterceptor } from './xhr.interceptor';
-import { ComicRoutingModule } from './comic/comic-routing.module';
 import { ComicService } from './services/comic.service';
-import { ComicListComponent } from './comic/library/comic-list/comic-list.component';
 import { ImportComicListComponent } from './comic/import-comic-list/import-comic-list.component';
 import { ComicListEntryComponent } from './comic/library/comic-list-entry/comic-list-entry.component';
 import { ComicDetailsComponent } from './comic/details/comic-details.component';
@@ -73,6 +72,7 @@ import { BusyIndicatorComponent } from './busy-indicator/busy-indicator.componen
 import { MenubarComponent } from './ui/component/menubar/menubar.component';
 import { ImportSidebarComponent } from './ui/component/import/import-sidebar/import-sidebar.component';
 import { LibrarySidebarComponent } from './ui/component/library/library-sidebar/library-sidebar.component';
+import { LibraryPageComponent } from './ui/page/library/library-page/library-page.component';
 
 @NgModule({
   declarations: [
@@ -82,7 +82,6 @@ import { LibrarySidebarComponent } from './ui/component/library/library-sidebar/
     AccountComponent,
     BusyIndicatorComponent,
     MenubarComponent,
-    ComicListComponent,
     ImportComicListComponent,
     ComicListEntryComponent,
     ComicDetailsComponent,
@@ -109,6 +108,7 @@ import { LibrarySidebarComponent } from './ui/component/library/library-sidebar/
     LibraryCoversComponent,
     ImportSidebarComponent,
     LibrarySidebarComponent,
+    LibraryPageComponent,
   ],
   imports: [
     BrowserModule,
@@ -122,13 +122,13 @@ import { LibrarySidebarComponent } from './ui/component/library/library-sidebar/
     ButtonModule,
     CheckboxModule,
     DropdownModule,
-    SliderModule
+    SliderModule,
+    TabViewModule,
     LoadingModule.forRoot({
       animationType: ANIMATION_TYPES.pulse,
       fullScreenBackdrop: true,
     }),
     CommonModule,
-    ComicRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     ConfirmationPopoverModule.forRoot({

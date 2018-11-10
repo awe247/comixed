@@ -1,6 +1,6 @@
 /*
  * ComiXed - A digital comic book library management application.
- * Copyright (C) 2017, The ComiXed Project
+ * Copyright (C) 2018, The ComiXed Project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,13 +17,28 @@
  * org.comixed;
  */
 
-import {NgModule} from '@angular/core';
-import {Routes, RouterModule} from '@angular/router';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-const routes: Routes = [];
+import { LibraryPageComponent } from './library-page.component';
 
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
-})
-export class ComicRoutingModule {}
+describe('LibraryPageComponent', () => {
+  let component: LibraryPageComponent;
+  let fixture: ComponentFixture<LibraryPageComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [LibraryPageComponent]
+    })
+      .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(LibraryPageComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
