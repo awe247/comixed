@@ -12,13 +12,13 @@
   let-page
   pTemplate='listItem'>
 <div class='ui-g'>
-  <div class='ui-g-4 ui-md-4'>
+  <div class='ui-g-2 ui-sm-6'>
     <img
       [src]='get_url_for_page(page)'
-      [style.height]='"" + image_size + "px"'
-      [style.width]='"auto"'>
+      [style.height]='"auto"'
+      [style.width]='"100%"'>
   </div>
-  <div class='ui-g-8 ui-md-8'>
+  <div class='ui-g-10 ui-sm-6'>
     <div class='ui-g'>
       <div class='ui-g-2 ui-sm-6'>
         <b>Filename: </b>
@@ -63,13 +63,11 @@
 </div>
 </ng-template> <ng-template
   let-page
-  pTemplate='gridItem'>
-<div>
-  <p-card> <img
-    [src]='get_url_for_page(page)'
-    [style.height]='"" + image_size + "px"'
-    [style.width]='"auto"'>
-  <p-footer>
+  pTemplate='gridItem'> <p-card> <img
+  [src]='get_url_for_page(page)'
+  [style.height]='"" + image_size + "px"'
+  [style.width]='"auto"'> <p-footer>
+<div class='ui-g'>
   <div
     *ngIf='page_type_options?.length'
     class='ui-g-12 ui-sm-12'>
@@ -87,6 +85,5 @@
       offIcon='pi pi-times'
       (onChange)='set_blocked_state(page, $event.value)'></p-toggleButton>
   </div>
-  </p-footer></p-card>
 </div>
-</ng-template></p-dataView>
+</p-footer></p-card></ng-template></p-dataView>

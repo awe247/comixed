@@ -1,0 +1,6 @@
+<p-galleria
+  *ngIf='comic'
+  [images]='pages'
+  [activeIndex]='current_page'
+  showCaption='true'
+  (onImageChange)='set_current_page($event.index)'></p-galleria>

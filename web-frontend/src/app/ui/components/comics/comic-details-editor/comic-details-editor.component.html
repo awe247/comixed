@@ -1,0 +1,150 @@
+<div
+  *ngIf='!show_candidates()'
+  class='ui-g'>
+  <div class='ui-g-2 ui-sm-2'>
+    <label for='api_key'><b>ComicVine API Key:</b> </label>
+  </div>
+  <div class='ui-g-10 ui-sm-6'>
+    <input
+      id='api_key'
+      type='text'
+      [(ngModel)]='api_key'
+      pInputText>
+    <button
+      pButton
+      type='button'
+      label='Save Key'
+      (click)='save_api_key()'></button>
+  </div>
+  <div class='ui-g-2 ui-sm-2'>
+    <label for='series'><b>Series:</b> </label>
+  </div>
+  <div class='ui-g-10 ui-sm-6'>
+    <input
+      id='series'
+      type='text'
+      [(ngModel)]='series'
+      pInputText>
+  </div>
+  <div class='ui-g-2 ui-sm-6'>
+    <label for='volume'><b>Volume:</b> </label>
+  </div>
+  <div class='ui-g-10 ui-sm-6'>
+    <input
+      id='volume'
+      type='text'
+      [(ngModel)]='volume'
+      pInputText>
+  </div>
+  <div class='ui-g-2 ui-sm-6'>
+    <label for='issue_number'><b>Issue #:</b> </label>
+  </div>
+  <div class='ui-g-10 ui-sm-6'>
+    <input
+      id='issue_number'
+      type='text'
+      [(ngModel)]='issue_number'
+      pInputText>
+  </div>
+  <div class='ui-g-12 ui-sm-12'>
+    <button
+      pButton
+      type='button'
+      label='Save'
+      (click)='save_changes()'></button>
+    <button
+      pButton
+      type='button'
+      label='Fetch'
+      (click)='fetch_candidates()'></button>
+  </div>
+</div>
+<div
+  *ngIf='show_candidates()'
+  class='ui-g'>
+  <div class='ui-g-9 ui-sm-9'>
+    <p-table
+      [value]='volumes'
+      [paginator]='true'
+      [rows]='10'
+      [paginatorPosition]='"both"'
+      selectionMode='single'
+      [(selection)]='current_volume'
+      [dataKey]='"id"'
+      (onRowSelect)='set_current_volume($event.data)'
+      (onRowUnselect)='set_current_volume(null)'> <ng-template
+      pTemplate='header'>
+    <tr>
+      <th>Start Year</th>
+      <th>Series</th>
+      <th># Of Issues</th>
+      <th>Publisher</th>
+    </tr>
+    </ng-template> <ng-template
+      pTemplate='body'
+      let-volume>
+    <tr [pSelectableRow]='volume'>
+      <td>{{ volume.start_year }}</td>
+      <td>{{ volume.name }}</td>
+      <td>{{ volume.issue_count }}</td>
+      <td>{{ volume.publiser }}</td>
+    </tr>
+    </ng-template> </p-table>
+  </div>
+  <div class='ui-g-3 ui-sm-3'>
+    <p-card *ngIf='current_issue'> <p-header>
+    <h3>{{ volume_selection_title }}</h3>
+    </p-header> <img
+      [src]='get_current_issue_image_url()'
+      [style.width]='"100%"'> </p-card>
+    <div class='ui-g'>
+      <div
+        *ngIf='current_issue'
+        class='ui-g-12 ui-sm-12'>
+        <button
+          pButton
+          type='button'
+          label='Select'
+          (click)='select_current_issue()'></button>
+      </div>
+      <div class='ui-g-12 ui-sm-12'>
+        <button
+          pButton
+          type='button'
+          label='Cancel'
+          (click)='cancel_volume_selection()'></button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 
+<div class='container-fluid'>
+  <div *ngIf='show_candidates()' class='row w-100 mx-0'>
+    <div class='col-3'>
+      <div class='card w-100'>
+        <div *ngIf='current_issue' class='card-body'>
+          <img class='card-img-bottom img-fluid'
+            src='{{get_current_issue_image_url()}}'
+            alt={{current_issue.name}}>
+        </div>
+        <div class='card-footer'>
+          <div *ngIf='current_issue'
+            class='row w-100 justify-content-center pb-1'>
+            <button class='btn btn-primary ml-1 w-75' type='button'
+              (click)='select_current_issue()'>Select</button>
+          </div>
+          <div *ngIf='current_issue'
+            class='row w-100 justify-content-center pb-1'>
+            <button class='btn btn-primary ml-1 w-75' type='button'
+              (click)='cancel_volume_selection()'>Cancel</button>
+          </div>
+          <div *ngIf='!current_issue'>
+            <p class='text-danger'>No issue in this volume matches
+              the search details entered.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+-->

@@ -1,0 +1,31 @@
+<div class='ui-g'>
+  <div class='ui-g-2 ui-sm-6'>
+    <b>Series: </b>
+  </div>
+  <div class='ui-g-10 ui-sm-6'>{{ comic.series || 'Unknown'}}</div>
+  <div class='ui-g-2 ui-sm-6'>
+    <b>Volume: </b>
+  </div>
+  <div class='ui-g-10 ui-sm-6'>{{ comic.volume || 'Unknown'}}</div>
+  <div class='ui-g-2 ui-sm-6'>
+    <b>Issue number: </b>
+  </div>
+  <div class='ui-g-10 ui-sm-6'>{{ comic.issue_number ||
+    'Unknown'}}</div>
+  <div class='ui-g-2 ui-sm-6'>
+    <b>Title: </b>
+  </div>
+  <div class='ui-g-10 ui-sm-6'>{{ comic.title || 'Unknown'}}</div>
+  <div class='ui-g-2 ui-sm-6'>
+    <b>Publisher: </b>
+  </div>
+  <div class='ui-g-10 ui-sm-6'>{{ comic.publisher || 'Unknown'}}</div>
+  <div class='ui-g-2 ui-sm-6'>
+    <b>Added to the library: </b>
+  </div>
+  <div class='ui-g-10 ui-sm-6'>{{ comic.added_date | date }}</div>
+  <div class='ui-g-2 ui-sm-6'>
+    <b>Pages: </b>
+  </div>
+  <div class='ui-g-10 ui-sm-6'>{{ comic.page_count }}</div>
+</div>

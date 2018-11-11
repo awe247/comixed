@@ -37,6 +37,10 @@ import { CardModule } from 'primeng/card';
 import { DataViewModule } from 'primeng/dataview';
 import { DialogModule } from 'primeng/dialog';
 import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import { GalleriaModule } from 'primeng/galleria';
+import { PanelModule } from 'primeng/panel';
+import { TooltipModule } from 'primeng/tooltip';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -46,11 +50,11 @@ import { XhrInterceptor } from './xhr.interceptor';
 import { ComicService } from './services/comic.service';
 import { MessageService } from 'primeng/api';
 import { ImportComicListComponent } from './comic/import-comic-list/import-comic-list.component';
-import { ComicDetailsComponent } from './comic/details/comic-details.component';
+import { ComicDetailsComponent } from './ui/pages/comic/comic-details/comic-details.component';
 import { DuplicatePageListComponent } from './comic/duplicate-page-list/duplicate-page-list.component';
 import { DuplicatePageListEntryComponent } from './comic/duplicate-page-list-entry/duplicate-page-list-entry.component';
 import { PageThumbnailComponent } from './comic/page-thumbnail/page-thumbnail.component';
-import { ReadViewerComponent } from './comic/read-viewer/read-viewer.component';
+import { ComicReaderComponent } from './ui/components/comics/comic-reader/comic-reader.component';
 import { SeriesFilterPipe } from './comic/series-filter.pipe';
 import { PageDetailsComponent } from './comic/page-details/page-details.component';
 import { ImportComicListEntryComponent } from './comic/import-comic-list-entry/import-comic-list-entry.component';
@@ -58,12 +62,12 @@ import { SelectedForImportPipe } from './comic/import-comic-list/selected-for-im
 import { PageSizeComponent } from './comic/page-size/page-size.component';
 import { GroupComicsComponent } from './comic/group-comics/group-comics.component';
 import { GroupByPipe } from './comic/group-by.pipe';
-import { ComicDetailsEditorComponent } from './comic/details/comic-details-editor/comic-details-editor.component';
+import { ComicDetailsEditorComponent } from './ui/components/comics/comic-details-editor/comic-details-editor.component';
 import { IssueDetailsComponent } from './comic/issue/details/issue-details/issue-details.component';
-import { ComicOverviewComponent } from './comic/details/overview/comic-overview/comic-overview.component';
-import { ComicStoryComponent } from './comic/details/story/comic-story/comic-story.component';
-import { ComicCreditsComponent } from './ui/components/comic-credits/comic-credits.component';
-import { ComicPagesComponent } from './comic/details/pages/comic-pages/comic-pages.component';
+import { ComicOverviewComponent } from './ui/components/comics/comic-overview/comic-overview.component';
+import { ComicStoryComponent } from './ui/components/comics/comic-story/comic-story.component';
+import { ComicCreditsComponent } from './ui/components/comics/comic-credits/comic-credits.component';
+import { ComicPagesComponent } from './ui/components/comics/comic-pages/comic-pages.component';
 import { ComicCoverComponent } from './ui/components/comic-cover/comic-cover.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { LoginComponent } from './login/login.component';
@@ -89,7 +93,7 @@ import { NotificationsComponent } from './ui/components/notifications/notificati
     DuplicatePageListComponent,
     DuplicatePageListEntryComponent,
     PageThumbnailComponent,
-    ReadViewerComponent,
+    ComicReaderComponent,
     SeriesFilterPipe,
     PageDetailsComponent,
     ImportComicListEntryComponent,
@@ -127,6 +131,10 @@ import { NotificationsComponent } from './ui/components/notifications/notificati
     DataViewModule,
     DialogModule,
     ScrollPanelModule,
+    ToggleButtonModule,
+    GalleriaModule,
+    PanelModule,
+    TooltipModule,
     LoadingModule.forRoot({
       animationType: ANIMATION_TYPES.pulse,
       fullScreenBackdrop: true,

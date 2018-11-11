@@ -17,23 +17,23 @@
  * org.comixed;
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {ComicDetailsComponent} from './comic-details.component';
+import { ComicReaderComponent } from './comic-reader.component';
 
-describe('ComicDetailsComponent', () => {
-  let component: ComicDetailsComponent;
-  let fixture: ComponentFixture<ComicDetailsComponent>;
+describe('ComicReaderComponent', () => {
+  let component: ComicReaderComponent;
+  let fixture: ComponentFixture<ComicReaderComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ComicDetailsComponent]
+      declarations: [ComicReaderComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ComicDetailsComponent);
+    fixture = TestBed.createComponent(ComicReaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
