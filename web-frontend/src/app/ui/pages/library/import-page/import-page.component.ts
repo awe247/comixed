@@ -1,6 +1,6 @@
 /*
  * ComiXed - A digital comic book library management application.
- * Copyright (C) 2017, The ComiXed Project
+ * Copyright (C) 2018, The ComiXed Project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,77 +17,68 @@
  * org.comixed;
  */
 
-import { Component } from '@angular/core';
-import { OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { FormBuilder } from '@angular/forms';
-import { FormGroup } from '@angular/forms';
-import { FormArray } from '@angular/forms';
-import { Validators } from '@angular/forms';
-import { AbstractControl } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { UserService } from '../../services/user.service';
-import { FileDetails } from '../../models/file-details.model';
-import { ComicService } from '../../services/comic.service';
-import { AlertService } from '../../services/alert.service';
-import { ImportComicListEntryComponent } from '../import-comic-list-entry/import-comic-list-entry.component';
-import { IssueDetailsComponent } from '../issue/details/issue-details/issue-details.component';
-import { SelectedForImportPipe } from './selected-for-import.pipe';
-import { ImportSidebarComponent } from '../../ui/components/import/import-sidebar/import-sidebar.component';
-
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
+import { SelectItem } from 'primeng/api';
+import { UserService } from '../../../../services/user.service';
+import { FileDetails } from '../../../../models/file-details.model';
+import { ComicService } from '../../../../services/comic.service';
+import { AlertService } from '../../../../services/alert.service';
 
 @Component({
-  selector: 'app-import-comics',
-  templateUrl: './import-comic-list.component.html',
-  styleUrls: ['./import-comic-list.component.css']
+  selector: 'app-import-page',
+  templateUrl: './import-page.component.html',
+  styleUrls: ['./import-page.component.css']
 })
-export class ImportComicListComponent implements OnInit {
-  directory_form: FormGroup;
-  directory = '';
-  delete_blocked_pages = false;
-  file_details = [];
-  all_are_selected = false;
-  importing = false;
-  plural = true;
-  display = 'none';
-  pending_imports = 0;
-  waiting_on_imports = false;
-  cover_size: number;
-  protected use_page_size: number;
-  current_page = 1;
-  selected_file_count = 0;
-  any_selected = false;
-  show_selections_only = false;
-  selected_file_detail: FileDetails;
-  selected_file_detail_title: string;
-  selected_file_detail_subtitle: string;
-  selected_file_image_url = '';
+export class ImportPageComponent implements OnInit {
+  readonly ROWS_PARAMETER = 'rows';
+  readonly SORT_PARAMETER = 'sort';
+  readonly COVER_PARAMETER = 'coversize';
+
+  protected sort_options: Array<SelectItem>;
+  protected sort_by: string;
+
+  protected rows_options: Array<SelectItem>;
+  protected rows: number;
+
+  protected cover_size: number;
+
+  protected file_details: Array<FileDetails> = [];
+  protected selected_file_detail: FileDetails;
+  protected selected_file_count = 0;
+  protected plural = false;
+  protected waiting_on_imports = false;
+  protected pending_imports = 0;
+  protected any_selected = false;
+  protected importing = false;
+  protected show_selections_only = false;
+  protected delete_blocked_pages = false;
 
   constructor(
     private user_service: UserService,
     private comic_service: ComicService,
     private alert_service: AlertService,
-    builder: FormBuilder,
-    private activeRoute: ActivatedRoute,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
   ) {
-    this.directory_form = builder.group({
-      'directory': ['', Validators.required],
-    });
     this.selected_file_detail = null;
-    this.selected_file_detail_title = '';
-    this.selected_file_detail_subtitle = '';
-    this.selected_file_image_url = '';
-    activeRoute.queryParams.subscribe(params => {
-      this.reload_page_size(params['page_size']);
+    activatedRoute.queryParams.subscribe(params => {
+      this.sort_by = params[this.SORT_PARAMETER] || 'filename';
+      this.rows = this.load_parameter(params[this.ROWS_PARAMETER], 10);
+      this.cover_size = this.load_parameter(params[this.COVER_PARAMETER],
+        parseInt(this.user_service.get_user_preference('cover_size', '200'), 10));
     });
-  }
-
-  private reload_page_size(page_size: string): void {
-    if (page_size) {
-      this.use_page_size = parseInt(page_size, 10);
-    } else {
-      this.use_page_size = parseInt(this.user_service.get_user_preference('import_page_size', '10'), 10);
-    }
+    this.sort_options = [
+      { label: 'Filename', value: 'filename' },
+      { label: 'Size', value: 'size' },
+    ];
+    this.rows_options = [
+      { label: '10 comics', value: 10 },
+      { label: '25 comics', value: 25 },
+      { label: '50 comics', value: 50 },
+      { label: '100 comics', value: 100 },
+    ];
   }
 
   ngOnInit() {
@@ -111,7 +102,43 @@ export class ImportComicListComponent implements OnInit {
           that.waiting_on_imports = false;
         });
     }, 250);
-    this.cover_size = parseInt(this.user_service.get_user_preference('cover_size', '200'), 10);
+  }
+
+  set_sort_by(sort_by: string): void {
+    this.sort_by = sort_by;
+    this.update_params(this.SORT_PARAMETER, this.sort_by);
+  }
+
+  set_rows(rows: number): void {
+    this.rows = rows;
+    this.update_params(this.ROWS_PARAMETER, `${this.rows}`);
+  }
+
+  set_cover_size(cover_size: number): void {
+    this.cover_size = cover_size;
+    this.update_params(this.COVER_PARAMETER, `${this.cover_size}`);
+    this.user_service.set_user_preference('cover_size', `${this.cover_size}`);
+  }
+
+  private update_params(name: string, value: string): void {
+    const queryParams: Params = Object.assign({}, this.activatedRoute.snapshot.queryParams);
+    if (value && value.length) {
+      queryParams[name] = value;
+    } else {
+      queryParams[name] = null;
+    }
+    this.router.navigate([], { relativeTo: this.activatedRoute, queryParams: queryParams });
+  }
+
+  private load_parameter(value: string, defvalue: any): any {
+    if (value && value.length) {
+      return parseInt(value, 10);
+    }
+    return defvalue;
+  }
+
+  get_cover_url(file: FileDetails): string {
+    return this.comic_service.get_cover_url_for_file(file.filename);
   }
 
   retrieve_files(directory: string): void {
@@ -134,13 +161,11 @@ export class ImportComicListComponent implements OnInit {
     );
   }
 
-  toggle_comic_selection(file: FileDetails): void {
-    file.selected = !file.selected;
-    if (file.selected) {
-      this.selected_file_count = this.selected_file_count + 1;
-    } else {
-      this.selected_file_count = this.selected_file_count - 1;
-    }
+  set_select_all(select: boolean): void {
+    this.file_details.forEach((file) => {
+      file.selected = select;
+    });
+    this.selected_file_count = select ? this.file_details.length : 0;
     this.any_selected = this.selected_file_count > 0;
   }
 
@@ -181,23 +206,6 @@ export class ImportComicListComponent implements OnInit {
     }
   }
 
-  show_details(file_detail: FileDetails): void {
-    if (this.selected_file_detail !== null && this.selected_file_detail.filename === file_detail.filename) {
-      this.selected_file_detail = null;
-      this.selected_file_image_url = '';
-    } else {
-      this.selected_file_detail = file_detail;
-      this.selected_file_image_url = this.comic_service.get_cover_url_for_file(this.selected_file_detail.filename);
-      this.selected_file_detail_title = this.selected_file_detail.base_filename;
-      this.selected_file_detail_subtitle = `${(this.selected_file_detail.size / 1024 ** 2).toPrecision(2)} Mb`;
-    }
-  }
-
-  set_page_size(page_size: number): void {
-    this.use_page_size = page_size;
-    this.user_service.set_user_preference('import_page_size', `${this.use_page_size}`);
-  }
-
   set_show_selections_only(show: boolean): void {
     this.show_selections_only = show;
   }
@@ -206,15 +214,18 @@ export class ImportComicListComponent implements OnInit {
     this.delete_blocked_pages = value;
   }
 
-  set_select_all(select: boolean): void {
-    this.file_details.forEach((file) => {
-      file.selected = select;
-    });
-    this.selected_file_count = select ? this.file_details.length : 0;
-    this.any_selected = this.selected_file_count > 0;
-  }
-
   disable_inputs(): boolean {
     return this.file_details.length === 0;
+  }
+
+  toggle_selected_state(file: FileDetails): void {
+    file.selected = !file.selected;
+    if (file.selected) {
+      this.selected_file_count = this.selected_file_count + 1;
+    } else {
+      this.selected_file_count = this.selected_file_count - 1;
+    }
+    this.any_selected = this.selected_file_count > 0;
+
   }
 }

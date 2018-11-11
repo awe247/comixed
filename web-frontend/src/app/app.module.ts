@@ -49,7 +49,6 @@ import { LoadingModule, ANIMATION_TYPES } from 'ngx-loading';
 import { XhrInterceptor } from './xhr.interceptor';
 import { ComicService } from './services/comic.service';
 import { MessageService } from 'primeng/api';
-import { ImportComicListComponent } from './comic/import-comic-list/import-comic-list.component';
 import { ComicDetailsComponent } from './ui/pages/comic/comic-details/comic-details.component';
 import { DuplicatePageListComponent } from './comic/duplicate-page-list/duplicate-page-list.component';
 import { DuplicatePageListEntryComponent } from './comic/duplicate-page-list-entry/duplicate-page-list-entry.component';
@@ -57,8 +56,6 @@ import { PageThumbnailComponent } from './comic/page-thumbnail/page-thumbnail.co
 import { ComicReaderComponent } from './ui/components/comics/comic-reader/comic-reader.component';
 import { SeriesFilterPipe } from './comic/series-filter.pipe';
 import { PageDetailsComponent } from './comic/page-details/page-details.component';
-import { ImportComicListEntryComponent } from './comic/import-comic-list-entry/import-comic-list-entry.component';
-import { SelectedForImportPipe } from './comic/import-comic-list/selected-for-import.pipe';
 import { PageSizeComponent } from './comic/page-size/page-size.component';
 import { GroupComicsComponent } from './comic/group-comics/group-comics.component';
 import { GroupByPipe } from './comic/group-by.pipe';
@@ -79,6 +76,7 @@ import { MenubarComponent } from './ui/components/menubar/menubar.component';
 import { ImportSidebarComponent } from './ui/components/import/import-sidebar/import-sidebar.component';
 import { LibraryPageComponent } from './ui/pages/library/library-page/library-page.component';
 import { NotificationsComponent } from './ui/components/notifications/notifications.component';
+import { ImportPageComponent } from './ui/pages/library/import-page/import-page.component';
 
 @NgModule({
   declarations: [
@@ -88,7 +86,6 @@ import { NotificationsComponent } from './ui/components/notifications/notificati
     AccountComponent,
     BusyIndicatorComponent,
     MenubarComponent,
-    ImportComicListComponent,
     ComicDetailsComponent,
     DuplicatePageListComponent,
     DuplicatePageListEntryComponent,
@@ -96,8 +93,6 @@ import { NotificationsComponent } from './ui/components/notifications/notificati
     ComicReaderComponent,
     SeriesFilterPipe,
     PageDetailsComponent,
-    ImportComicListEntryComponent,
-    SelectedForImportPipe,
     PageSizeComponent,
     GroupComicsComponent,
     GroupByPipe,
@@ -111,6 +106,7 @@ import { NotificationsComponent } from './ui/components/notifications/notificati
     ImportSidebarComponent,
     LibraryPageComponent,
     NotificationsComponent,
+    ImportPageComponent,
   ],
   imports: [
     BrowserModule,

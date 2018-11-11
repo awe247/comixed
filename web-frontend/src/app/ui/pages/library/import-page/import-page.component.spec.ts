@@ -17,30 +17,28 @@
  * org.comixed;
  */
 
-import {Pipe, PipeTransform} from '@angular/core';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {FileDetails} from '../../models/file-details.model';
+import { ImportPageComponent } from './import-page.component';
 
-@Pipe({
-  name: 'selected_for_import'
-})
-export class SelectedForImportPipe implements PipeTransform {
+describe('ImportPageComponent', () => {
+  let component: ImportPageComponent;
+  let fixture: ComponentFixture<ImportPageComponent>;
 
-  transform(file_details: FileDetails[], selected_only: boolean): any {
-    if (!file_details) {
-      return [];
-    }
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ImportPageComponent]
+    })
+      .compileComponents();
+  }));
 
-    if (selected_only === false) {
-      return file_details;
-    }
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ImportPageComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    const result = file_details.filter((file_detail: FileDetails) => {
-      return file_detail.selected;
-    });
-
-    console.log('result=', result);
-
-    return result;
-  }
-}
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
