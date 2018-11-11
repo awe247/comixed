@@ -1,6 +1,6 @@
 /*
  * ComiXed - A digital comic book library management application.
- * Copyright (C) 2017, The ComiXed Project
+ * Copyright (C) 2018, The ComiXed Project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +17,11 @@
  * org.comixed;
  */
 
-import { Component } from '@angular/core';
-import { OnInit } from '@angular/core';
-import { Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+} from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
 import { Comic } from '../../../models/comic.model';
@@ -27,18 +29,18 @@ import { ComicService } from '../../../services/comic.service';
 import { AlertService } from '../../../services/alert.service';
 
 @Component({
-  selector: 'app-comic-list-entry',
-  templateUrl: './comic-list-entry.component.html',
-  styleUrls: ['./comic-list-entry.component.css']
+  selector: 'app-comic-cover',
+  templateUrl: './comic-cover.component.html',
+  styleUrls: ['./comic-cover.component.css']
 })
-
-export class ComicListEntryComponent implements OnInit {
+export class ComicCoverComponent implements OnInit {
   @Input() comic: Comic;
   @Input() cover_size: number;
   @Input() selected: boolean;
-  @Input() sort_order: number;
+  @Input() sort_order: Observable<number>;
   cover_url: string;
   title_text: string;
+  subtitle_text: string;
   delete_comic_title: string;
   delete_comic_message: string;
   confirm_button = 'Yes';
@@ -64,12 +66,15 @@ export class ComicListEntryComponent implements OnInit {
   }
 
   get_subtitle(): string {
-    switch (this.sort_order) {
-      case 0: return `(v.${this.comic.volume || 'Unknown'})`;
-      case 1: return `Added: ${this.format_date_full(this.comic.added_date, 'This should never happen...')}`;
-      case 2: return `Cover date: ${this.format_date_month_year(this.comic.cover_date, 'Unknown')}`;
-      case 3: return `Last read: ${this.format_date_full(this.comic.last_read_date, 'Never')}`;
-    }
+    this.sort_order.subscribe(
+      (sort_order: number) => {
+        switch (sort_order) {
+          case 0: return `(v.${this.comic.volume || 'Unknown'})`;
+          case 1: return `Added: ${this.format_date_full(this.comic.added_date, 'This should never happen...')}`;
+          case 2: return `Cover date: ${this.format_date_month_year(this.comic.cover_date, 'Unknown')}`;
+          case 3: return `Last read: ${this.format_date_full(this.comic.last_read_date, 'Never')}`;
+        }
+      });
     return `Invalid sort value: ${this.sort_order}`;
   }
 
