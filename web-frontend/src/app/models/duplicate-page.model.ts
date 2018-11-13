@@ -17,28 +17,32 @@
  * org.comixed;
  */
 
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import { PageType } from './page-type.model';
 
-import {DuplicatePageListComponent} from './duplicate-page-list.component';
+export class DuplicatePage {
+  id: number;
+  filename: string;
+  hash: string;
+  deleted: boolean;
+  blocked: boolean;
+  page_type: PageType;
+  index: number;
 
-describe('DuplicatePageListComponent', () => {
-  let component: DuplicatePageListComponent;
-  let fixture: ComponentFixture<DuplicatePageListComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [DuplicatePageListComponent]
-    })
-      .compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(DuplicatePageListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+  constructor(
+    id?: number,
+    filename?: string,
+    hash?: string,
+    deleted?: boolean,
+    blocked?: boolean,
+    page_type?: PageType,
+    index?: number
+  ) {
+    this.id = id;
+    this.filename = filename;
+    this.hash = hash;
+    this.deleted = deleted;
+    this.blocked = blocked;
+    this.page_type = page_type;
+    this.index = index;
+  }
+}
