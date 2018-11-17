@@ -41,6 +41,8 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
 import { GalleriaModule } from 'primeng/galleria';
 import { PanelModule } from 'primeng/panel';
 import { TooltipModule } from 'primeng/tooltip';
+import { ToolbarModule } from 'primeng/toolbar';
+import { SplitButtonModule } from 'primeng/splitbutton';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -71,11 +73,13 @@ import { AlertService } from './services/alert.service';
 import { UserService } from './services/user.service';
 import { BusyIndicatorComponent } from './busy-indicator/busy-indicator.component';
 import { MenubarComponent } from './ui/components/menubar/menubar.component';
-import { ImportSidebarComponent } from './ui/components/import/import-sidebar/import-sidebar.component';
 import { LibraryPageComponent } from './ui/pages/library/library-page/library-page.component';
 import { NotificationsComponent } from './ui/components/notifications/notifications.component';
 import { ImportPageComponent } from './ui/pages/library/import-page/import-page.component';
 import { DuplicatesPageComponent } from './ui/pages/library/duplicates-page/duplicates-page.component';
+import { ImportToolbarComponent } from './ui/components/import/import-toolbar/import-toolbar.component';
+import { SelectedComicsComponent } from './ui/components/import/selected-comics/selected-comics.component';
+import { FileDetailsCoverComponent } from './ui/components/file-details/file-details-cover/file-details-cover.component';
 
 @NgModule({
   declarations: [
@@ -100,11 +104,13 @@ import { DuplicatesPageComponent } from './ui/pages/library/duplicates-page/dupl
     ComicCreditsComponent,
     ComicPagesComponent,
     ComicCoverComponent,
-    ImportSidebarComponent,
     LibraryPageComponent,
     NotificationsComponent,
     ImportPageComponent,
     DuplicatesPageComponent,
+    ImportToolbarComponent,
+    SelectedComicsComponent,
+    FileDetailsCoverComponent,
   ],
   imports: [
     BrowserModule,
@@ -129,6 +135,8 @@ import { DuplicatesPageComponent } from './ui/pages/library/duplicates-page/dupl
     GalleriaModule,
     PanelModule,
     TooltipModule,
+    ToolbarModule,
+    SplitButtonModule,
     LoadingModule.forRoot({
       animationType: ANIMATION_TYPES.pulse,
       fullScreenBackdrop: true,

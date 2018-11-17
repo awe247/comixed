@@ -19,21 +19,21 @@
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ImportSidebarComponent } from './import-sidebar.component';
+import { ImportToolbarComponent } from './import-toolbar.component';
 
-describe('ImportSidebarComponent', () => {
-  let component: ImportSidebarComponent;
-  let fixture: ComponentFixture<ImportSidebarComponent>;
+describe('ImportToolbarComponent', () => {
+  let component: ImportToolbarComponent;
+  let fixture: ComponentFixture<ImportToolbarComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ImportSidebarComponent]
+      declarations: [ImportToolbarComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ImportSidebarComponent);
+    fixture = TestBed.createComponent(ImportToolbarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
