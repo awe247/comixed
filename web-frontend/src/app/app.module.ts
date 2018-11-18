@@ -58,7 +58,6 @@ import { ComicOverviewComponent } from './ui/components/comics/comic-overview/co
 import { ComicStoryComponent } from './ui/components/comics/comic-story/comic-story.component';
 import { ComicCreditsComponent } from './ui/components/comics/comic-credits/comic-credits.component';
 import { ComicPagesComponent } from './ui/components/comics/comic-pages/comic-pages.component';
-import { ComicCoverComponent } from './ui/components/comic-cover/comic-cover.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { LoginComponent } from './login/login.component';
 import { AccountComponent } from './account/account.component';
@@ -73,6 +72,8 @@ import { DuplicatesPageComponent } from './ui/pages/library/duplicates-page/dupl
 import { ImportToolbarComponent } from './ui/components/import/import-toolbar/import-toolbar.component';
 import { SelectedComicsComponent } from './ui/components/import/selected-comics/selected-comics.component';
 import { FileDetailsCoverComponent } from './ui/components/file-details/file-details-cover/file-details-cover.component';
+import { StoreModule } from '@ngrx/store';
+import { libraryReducer } from './reducers/library.reducer';
 
 @NgModule({
   declarations: [
@@ -89,7 +90,6 @@ import { FileDetailsCoverComponent } from './ui/components/file-details/file-det
     ComicStoryComponent,
     ComicCreditsComponent,
     ComicPagesComponent,
-    ComicCoverComponent,
     LibraryPageComponent,
     NotificationsComponent,
     ImportPageComponent,
@@ -142,6 +142,8 @@ import { FileDetailsCoverComponent } from './ui/components/file-details/file-det
       animationType: ANIMATION_TYPES.pulse,
       fullScreenBackdrop: true,
     }),
+
+    StoreModule.forRoot({ library: libraryReducer }),
   ],
   providers: [
     AlertService,

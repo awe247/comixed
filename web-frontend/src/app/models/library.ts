@@ -17,28 +17,10 @@
  * org.comixed;
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Comic } from './comic.model';
 
-import { ComicCoverComponent } from './comic-cover.component';
-
-describe('ComicCoverComponent', () => {
-  let component: ComicCoverComponent;
-  let fixture: ComponentFixture<ComicCoverComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ComicCoverComponent]
-    })
-      .compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ComicCoverComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+export interface Library {
+  is_updating: boolean;
+  latest_comic_update: string;
+  comics: Array<Comic>;
+}
