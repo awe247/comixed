@@ -17,10 +17,9 @@
  * org.comixed;
  */
 
-import { Library } from './models/library';
-import { LibraryDisplay } from './models/library-display';
-
-export interface AppState {
-  readonly library: Library;
-  readonly library_display: LibraryDisplay;
+export interface LibraryDisplay {
+  current_tab: number;
+  sort: string;
+  rows: number;
+  cover_size: number;
 }
