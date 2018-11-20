@@ -47,7 +47,7 @@ export class LibraryPageComponent implements OnInit, OnDestroy {
 
   private library$: Observable<Library>;
   private library_subscription: Subscription;
-  private library: Library;
+  library: Library;
 
   private library_display$: Observable<LibraryDisplay>;
   private library_display_subscription: Subscription;
@@ -97,6 +97,7 @@ export class LibraryPageComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.library_subscription = this.library$.subscribe(
       (library: Library) => {
+        this.library = library;
         this.comics = library.comics;
       });
     this.library_display_subscription = this.library_display$.subscribe(
@@ -118,10 +119,9 @@ export class LibraryPageComponent implements OnInit, OnDestroy {
     this.library_subscription.unsubscribe();
   }
 
-  set_selected_comic(event: Event, comic: Comic): void {
+  set_selected_comic(comic: Comic): void {
     this.selected_comic = comic;
     this.show_dialog = true;
-    event.preventDefault();
   }
 
   hide_dialog(): void {
@@ -163,6 +163,10 @@ export class LibraryPageComponent implements OnInit, OnDestroy {
 
   delete_comic(comic: Comic): void {
     this.comic_service.remove_comic_from_library(comic);
+  }
+
+  get_comic_title(comic: Comic): string {
+    return `${comic.series || 'Unknown'} v${comic.volume || '????'} #${comic.issue_number || '??'}`;
   }
 
   private update_params(name: string, value: string): void {

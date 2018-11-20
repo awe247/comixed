@@ -75,6 +75,9 @@ import { FileDetailsCoverComponent } from './ui/components/file-details/file-det
 import { StoreModule } from '@ngrx/store';
 import { libraryReducer } from './reducers/library.reducer';
 import { libraryDisplayReducer } from './reducers/library-display.reducer';
+import { LibraryCoversComponent } from './ui/components/library/library-covers/library-covers.component';
+import { LibraryDetailsComponent } from './ui/components/library/library-details/library-details.component';
+import { IssueDetailsComponent } from './ui/components/library/issue-details/issue-details.component';
 
 @NgModule({
   declarations: [
@@ -98,6 +101,9 @@ import { libraryDisplayReducer } from './reducers/library-display.reducer';
     ImportToolbarComponent,
     SelectedComicsComponent,
     FileDetailsCoverComponent,
+    LibraryCoversComponent,
+    LibraryDetailsComponent,
+    IssueDetailsComponent,
   ],
   imports: [
     BrowserModule,
