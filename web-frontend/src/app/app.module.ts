@@ -43,7 +43,7 @@ import { PanelModule } from 'primeng/panel';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToolbarModule } from 'primeng/toolbar';
 import { SplitButtonModule } from 'primeng/splitbutton';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ProgressBarModule } from 'primeng/progressbar';
 import { BlockUIModule } from 'primeng/blockui';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -54,12 +54,12 @@ import { XhrInterceptor } from './xhr.interceptor';
 import { ComicService } from './services/comic.service';
 import { MessageService } from 'primeng/api';
 import { ComicDetailsComponent } from './ui/pages/comic/comic-details/comic-details.component';
-import { ComicReaderComponent } from './ui/components/comics/comic-reader/comic-reader.component';
-import { ComicDetailsEditorComponent } from './ui/components/comics/comic-details-editor/comic-details-editor.component';
-import { ComicOverviewComponent } from './ui/components/comics/comic-overview/comic-overview.component';
-import { ComicStoryComponent } from './ui/components/comics/comic-story/comic-story.component';
-import { ComicCreditsComponent } from './ui/components/comics/comic-credits/comic-credits.component';
-import { ComicPagesComponent } from './ui/components/comics/comic-pages/comic-pages.component';
+import { ComicReaderComponent } from './ui/components/comic/comic-reader/comic-reader.component';
+import { ComicDetailsEditorComponent } from './ui/components/comic/comic-details-editor/comic-details-editor.component';
+import { ComicOverviewComponent } from './ui/components/comic/comic-overview/comic-overview.component';
+import { ComicStoryComponent } from './ui/components/comic/comic-story/comic-story.component';
+import { ComicCreditsComponent } from './ui/components/comic/comic-credits/comic-credits.component';
+import { ComicPagesComponent } from './ui/components/comic/comic-pages/comic-pages.component';
 import { MainPageComponent } from './ui/pages/main-page/main-page.component';
 import { LoginComponent } from './login/login.component';
 import { AccountComponent } from './account/account.component';
@@ -76,9 +76,12 @@ import { FileDetailsCoverComponent } from './ui/components/file-details/file-det
 import { StoreModule } from '@ngrx/store';
 import { libraryReducer } from './reducers/library.reducer';
 import { libraryDisplayReducer } from './reducers/library-display.reducer';
+import { libraryScrapingReducer } from './reducers/library-scraping.reducer';
 import { LibraryCoversComponent } from './ui/components/library/library-covers/library-covers.component';
 import { LibraryDetailsComponent } from './ui/components/library/library-details/library-details.component';
 import { IssueDetailsComponent } from './ui/components/library/issue-details/issue-details.component';
+import { EffectsModule } from '@ngrx/effects';
+import { LibraryScrapeEffects } from './effects/library-scrape.effects';
 
 @NgModule({
   declarations: [
@@ -130,7 +133,7 @@ import { IssueDetailsComponent } from './ui/components/library/issue-details/iss
     TooltipModule,
     ToolbarModule,
     SplitButtonModule,
-    ProgressSpinnerModule,
+    ProgressBarModule,
     BlockUIModule,
     LoadingModule.forRoot({
       animationType: ANIMATION_TYPES.pulse,
@@ -155,7 +158,9 @@ import { IssueDetailsComponent } from './ui/components/library/issue-details/iss
     StoreModule.forRoot({
       library: libraryReducer,
       library_display: libraryDisplayReducer,
+      library_scraping: libraryScrapingReducer,
     }),
+    EffectsModule.forRoot([LibraryScrapeEffects]),
   ],
   providers: [
     AlertService,
