@@ -17,28 +17,28 @@
  * org.comixed;
  */
 
-import { Component, OnInit, Input } from '@angular/core';
-import { ComicService } from '../../../../services/comic.service';
-import { ComicFile } from '../../../../models/import/comic-file';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-@Component({
-  selector: 'app-file-details-cover',
-  templateUrl: './file-details-cover.component.html',
-  styleUrls: ['./file-details-cover.component.css']
-})
-export class FileDetailsCoverComponent implements OnInit {
-  @Input() file_details: ComicFile;
-  @Input() width: string;
-  @Input() height: string;
+import { PageHashViewComponent } from './page-hash-view.component';
 
-  constructor(
-    private comic_service: ComicService,
-  ) { }
+describe('PageHashViewComponent', () => {
+  let component: PageHashViewComponent;
+  let fixture: ComponentFixture<PageHashViewComponent>;
 
-  ngOnInit() {
-  }
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [PageHashViewComponent]
+    })
+      .compileComponents();
+  }));
 
-  get_cover_url(file: ComicFile): string {
-    return this.comic_service.get_cover_url_for_file(file.filename);
-  }
-}
+  beforeEach(() => {
+    fixture = TestBed.createComponent(PageHashViewComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

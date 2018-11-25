@@ -17,9 +17,9 @@
  * org.comixed;
  */
 
-import { Comic } from './comic';
-import { Volume } from './volume';
-import { Issue } from './issue';
+import { Comic } from './comics/comic';
+import { Volume } from './comics/volume';
+import { Issue } from './scraping/issue';
 
 export interface LibraryScrape {
   busy: boolean;

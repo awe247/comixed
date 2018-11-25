@@ -27,9 +27,9 @@ import * as LibraryScrapingActions from '../../../../actions/library-scraping.ac
 import { AlertService } from '../../../../services/alert.service';
 import { UserService } from '../../../../services/user.service';
 import { ComicService } from '../../../../services/comic.service';
-import { Comic } from '../../../../models/comic';
-import { Volume } from '../../../../models/volume';
-import { Issue } from '../../../../models/issue';
+import { Comic } from '../../../../models/comics/comic';
+import { Volume } from '../../../../models/comics/volume';
+import { Issue } from '../../../../models/scraping/issue';
 import { LibraryScrape } from '../../../../models/library-scrape';
 
 @Component({

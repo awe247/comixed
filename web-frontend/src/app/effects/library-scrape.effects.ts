@@ -27,8 +27,8 @@ import * as LibraryScrapingActions from '../actions/library-scraping.actions';
 import { ComicService } from '../services/comic.service';
 import { AlertService } from '../services/alert.service';
 import { UserService } from '../services/user.service';
-import { Volume } from '../models/volume';
-import { Issue } from '../models/issue';
+import { Volume } from '../models/comics/volume';
+import { Issue } from '../models/scraping/issue';
 
 @Injectable()
 export class LibraryScrapeEffects {

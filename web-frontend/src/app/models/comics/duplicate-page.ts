@@ -17,28 +17,16 @@
  * org.comixed;
  */
 
-import { Component, OnInit, Input } from '@angular/core';
-import { ComicService } from '../../../../services/comic.service';
-import { ComicFile } from '../../../../models/import/comic-file';
+import { Comic } from './comic';
+import { PageType } from './page-type';
 
-@Component({
-  selector: 'app-file-details-cover',
-  templateUrl: './file-details-cover.component.html',
-  styleUrls: ['./file-details-cover.component.css']
-})
-export class FileDetailsCoverComponent implements OnInit {
-  @Input() file_details: ComicFile;
-  @Input() width: string;
-  @Input() height: string;
-
-  constructor(
-    private comic_service: ComicService,
-  ) { }
-
-  ngOnInit() {
-  }
-
-  get_cover_url(file: ComicFile): string {
-    return this.comic_service.get_cover_url_for_file(file.filename);
-  }
+export interface DuplicatePage {
+  id: number;
+  filename: string;
+  hash: string;
+  deleted: boolean;
+  blocked: boolean;
+  page_type: PageType;
+  index: number;
+  comic: Comic;
 }

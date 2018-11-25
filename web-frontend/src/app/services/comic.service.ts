@@ -30,10 +30,10 @@ import * as LibraryActions from '../actions/library.actions';
 
 import { UserService } from './user.service';
 import { AlertService } from './alert.service';
-import { Comic } from '../models/comic';
-import { Page } from '../models/page';
-import { PageType } from '../models/page-type';
-import { ComicFile } from '../models/comic-file';
+import { Comic } from '../models/comics/comic';
+import { Page } from '../models/comics/page';
+import { PageType } from '../models/comics/page-type';
+import { ComicFile } from '../models/import/comic-file';
 
 @Injectable()
 export class ComicService {
@@ -175,6 +175,10 @@ export class ComicService {
 
   get_cover_url_for_comic(comic: Comic): string {
     return `${this.api_url}/comics/${comic.id}/pages/0/content`;
+  }
+
+  get_label_for_comic(comic: Comic): string {
+    return `${comic.series || 'Unknown'} v${comic.volume || 'Unknown'} #${comic.issue_number || '??'}`;
   }
 
   get_url_for_missing_page(): string {

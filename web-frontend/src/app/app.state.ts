@@ -20,9 +20,11 @@
 import { Library } from './models/library';
 import { LibraryDisplay } from './models/library-display';
 import { LibraryScrape } from './models/library-scrape';
+import { Duplicates } from './models/duplicates';
 
 export interface AppState {
   readonly library: Library;
   readonly library_display: LibraryDisplay;
   readonly library_scraping: LibraryScrape;
+  readonly duplicates: Duplicates;
 }

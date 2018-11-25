@@ -77,11 +77,15 @@ import { StoreModule } from '@ngrx/store';
 import { libraryReducer } from './reducers/library.reducer';
 import { libraryDisplayReducer } from './reducers/library-display.reducer';
 import { libraryScrapingReducer } from './reducers/library-scraping.reducer';
+import { duplicatesReducer } from './reducers/duplicates.reducer';
 import { LibraryCoversComponent } from './ui/components/library/library-covers/library-covers.component';
 import { LibraryDetailsComponent } from './ui/components/library/library-details/library-details.component';
 import { IssueDetailsComponent } from './ui/components/library/issue-details/issue-details.component';
 import { EffectsModule } from '@ngrx/effects';
 import { LibraryScrapeEffects } from './effects/library-scrape.effects';
+import { DuplicatesEffects } from './effects/duplicates.effects';
+import { DuplicatePagesViewComponent } from './ui/views/library/duplicate-pages-view/duplicate-pages-view.component';
+import { PageHashViewComponent } from './ui/views/library/page-hash-view/page-hash-view.component';
 
 @NgModule({
   declarations: [
@@ -107,6 +111,8 @@ import { LibraryScrapeEffects } from './effects/library-scrape.effects';
     LibraryCoversComponent,
     LibraryDetailsComponent,
     IssueDetailsComponent,
+    DuplicatePagesViewComponent,
+    PageHashViewComponent,
   ],
   imports: [
     BrowserModule,
@@ -159,8 +165,12 @@ import { LibraryScrapeEffects } from './effects/library-scrape.effects';
       library: libraryReducer,
       library_display: libraryDisplayReducer,
       library_scraping: libraryScrapingReducer,
+      duplicates: duplicatesReducer,
     }),
-    EffectsModule.forRoot([LibraryScrapeEffects]),
+    EffectsModule.forRoot([
+      LibraryScrapeEffects,
+      DuplicatesEffects,
+    ]),
   ],
   providers: [
     AlertService,

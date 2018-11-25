@@ -17,14 +17,16 @@
  * org.comixed;
  */
 
-import { PageType } from './page-type';
+import { DuplicatePage } from './comics/duplicate-page';
 
-export interface DuplicatePage {
-  id: number;
-  filename: string;
-  hash: string;
-  deleted: boolean;
-  blocked: boolean;
-  page_type: PageType;
-  index: number;
+export interface Duplicates {
+  busy: boolean;
+  pages: Array<DuplicatePage>;
+  hashes: Array<String>;
+  pages_by_hash: Map<string, Array<DuplicatePage>>;
+  current_hash: string;
+  current_duplicates: Array<DuplicatePage>;
+  last_hash: string;
+  pages_deleted: number;
+  pages_undeleted: number;
 }
