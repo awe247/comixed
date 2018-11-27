@@ -23,8 +23,8 @@ import { Comic } from '../models/comics/comic';
 import * as LibraryActions from '../actions/library.actions';
 
 const initial_state: Library = {
-  is_updating: false,
-  latest_comic_update: '0',
+  busy: false,
+  last_comic_date: '0',
   comics: [],
 };
 
@@ -33,13 +33,36 @@ export function libraryReducer(
   action: LibraryActions.Actions,
 ) {
   switch (action.type) {
-    case LibraryActions.SET_UPDATING:
+    case LibraryActions.LIBRARY_FETCH_LIBRARY_CHANGES:
       return {
         ...state,
-        is_updating: action.payload,
+        busy: true,
+        latest_comic_update: action.payload.last_comic_date,
       };
 
-    case LibraryActions.UPDATE_COMIC: {
+    case LibraryActions.LIBRARY_MERGE_NEW_COMICS:
+      const comics = state.comics.concat(action.payload.comics);
+      let last_comic_date = '0';
+      if (comics.length > 0) {
+        last_comic_date = comics.reduce((last: Comic, current: Comic) => {
+          const last_added_date = parseInt(last.added_date, 10);
+          const curr_added_date = parseInt(current.added_date, 10);
+
+          if (curr_added_date > last_added_date) {
+            return current;
+          } else {
+            return last;
+          }
+        }).added_date;
+      }
+      return {
+        ...state,
+        busy: false,
+        last_comic_date: last_comic_date,
+        comics: comics,
+      };
+
+    case LibraryActions.LIBRARY_UPDATE_COMIC: {
       const index = state.comics.findIndex((comic: Comic) => {
         return comic.id === action.payload.id;
       });
@@ -56,31 +79,19 @@ export function libraryReducer(
       };
     }
 
-    case LibraryActions.UPDATE_COMICS: {
-      const comics = state.comics.concat(action.payload);
-      let latest_comic_update = state.latest_comic_update;
-      let latest_date = parseInt(latest_comic_update, 10);
-
-      comics.forEach((comic: Comic) => {
-        if (parseInt(comic.added_date, 10) > latest_date) {
-          latest_comic_update = comic.added_date;
-          latest_date = parseInt(latest_comic_update, 10);
-        }
-      });
-
+    case LibraryActions.LIBRARY_REMOVE_COMIC: {
       return {
         ...state,
-        is_updating: false,
-        latest_comic_update: latest_comic_update,
-        comics: comics,
+        busy: true,
       };
     }
 
-    case LibraryActions.REMOVE_COMIC: {
-      const comics = state.comics.filter(comic => comic.id !== action.payload);
+    case LibraryActions.LIBRARY_UPDATE_COMICS_REMOVE_COMIC: {
+      const updated_comics = state.comics.filter(comic => comic.id !== action.payload.comic.id);
       return {
         ...state,
-        comics: comics,
+        busy: false,
+        comics: updated_comics,
       };
     }
 

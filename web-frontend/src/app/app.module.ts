@@ -22,7 +22,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { ConfirmationPopoverModule } from 'angular-confirmation-popover';
 import { MenubarModule } from 'primeng/menubar';
 import { SidebarModule } from 'primeng/sidebar';
 import { InputTextModule } from 'primeng/inputtext';
@@ -45,6 +44,8 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { SplitButtonModule } from 'primeng/splitbutton';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { BlockUIModule } from 'primeng/blockui';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -82,6 +83,7 @@ import { LibraryCoversComponent } from './ui/components/library/library-covers/l
 import { LibraryDetailsComponent } from './ui/components/library/library-details/library-details.component';
 import { IssueDetailsComponent } from './ui/components/library/issue-details/issue-details.component';
 import { EffectsModule } from '@ngrx/effects';
+import { LibraryEffects } from './effects/library.effects';
 import { LibraryScrapeEffects } from './effects/library-scrape.effects';
 import { DuplicatesEffects } from './effects/duplicates.effects';
 import { DuplicatePagesViewComponent } from './ui/views/library/duplicate-pages-view/duplicate-pages-view.component';
@@ -141,6 +143,7 @@ import { PageHashViewComponent } from './ui/views/library/page-hash-view/page-ha
     SplitButtonModule,
     ProgressBarModule,
     BlockUIModule,
+    ConfirmDialogModule,
     LoadingModule.forRoot({
       animationType: ANIMATION_TYPES.pulse,
       fullScreenBackdrop: true,
@@ -148,10 +151,6 @@ import { PageHashViewComponent } from './ui/views/library/page-hash-view/page-ha
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    ConfirmationPopoverModule.forRoot({
-      confirmButtonType: 'danger',
-      cancelButtonType: 'basic',
-    }),
     NgxPaginationModule,
 
     FormsModule,
@@ -168,6 +167,7 @@ import { PageHashViewComponent } from './ui/views/library/page-hash-view/page-ha
       duplicates: duplicatesReducer,
     }),
     EffectsModule.forRoot([
+      LibraryEffects,
       LibraryScrapeEffects,
       DuplicatesEffects,
     ]),
@@ -180,6 +180,7 @@ import { PageHashViewComponent } from './ui/views/library/page-hash-view/page-ha
     [
       { provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true }
     ],
+    ConfirmationService,
   ],
   bootstrap: [AppComponent]
 })
