@@ -17,16 +17,13 @@
  * org.comixed;
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  FormBuilder,
-  FormGroup,
-  AbstractControl,
-  Validators,
-} from '@angular/forms';
-
-import { UserService } from '../services/user.service';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../app.state';
+import * as UserActions from '../../../actions/user.actions';
+import { User } from '../../../models/user/user';
+import { FormBuilder, FormGroup, AbstractControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -34,15 +31,17 @@ import { UserService } from '../services/user.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  @Input() show_login_dialog: boolean;
   login_form: FormGroup;
   email: string;
   password: string;
 
   constructor(
+    private store: Store<AppState>,
     private router: Router,
-    private user_service: UserService,
     private form_builder: FormBuilder,
   ) {
+
     this.login_form = form_builder.group({
       'email': ['', Validators.compose([
         Validators.required,
@@ -58,10 +57,11 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
   }
 
-  login(): void {
-    this.user_service.login(this.email, this.password,
-      () => {
-        this.router.navigateByUrl('/home');
-      });
+  do_login(): void {
+    this.store.dispatch(new UserActions.UserLoggingIn({ email: this.email, password: this.password }));
+  }
+
+  cancel_login(): void {
+    this.store.dispatch(new UserActions.UserCancelLogin());
   }
 }

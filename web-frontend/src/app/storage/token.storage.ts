@@ -1,6 +1,6 @@
 /*
  * ComiXed - A digital comic book library management application.
- * Copyright (C) 2017, The ComiXed Project
+ * Copyright (C) 2018, The ComiXed Project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,17 +17,26 @@
  * org.comixed;
  */
 
-package org.comixed;
+import { Injectable } from '@angular/core';
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
+export const TOKEN_KEY = 'AuthToken';
 
-@Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true,
-                            securedEnabled = true,
-                            jsr250Enabled = true)
-public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration
-{
+@Injectable()
+export class TokenStorage {
 
+  constructor() { }
+
+  sign_out(): void {
+    window.sessionStorage.removeItem(TOKEN_KEY);
+    window.sessionStorage.clear();
+  }
+
+  save_token(token: string): void {
+    window.sessionStorage.removeItem(TOKEN_KEY);
+    window.sessionStorage.setItem(TOKEN_KEY, token);
+  }
+
+  get_token(): string {
+    return sessionStorage.getItem(TOKEN_KEY);
+  }
 }

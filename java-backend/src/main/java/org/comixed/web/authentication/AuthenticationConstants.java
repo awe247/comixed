@@ -17,14 +17,11 @@
  * org.comixed;
  */
 
-import { Role } from './role';
-import { Preference } from './preference';
+package org.comixed.web.authentication;
 
-export interface User {
-  name: string;
-  authenticated: boolean;
-  first_login_date: number;
-  last_login_date: number;
-  roles: Role[];
-  preferences: Preference[];
+public interface AuthenticationConstants
+{
+    String SIGNING_KEY = "comixed";
+    String HEADER_STRING = "Authorization";
+    String TOKEN_PREFIX = "Bearer ";
 }

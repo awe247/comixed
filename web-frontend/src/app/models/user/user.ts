@@ -17,16 +17,18 @@
  * org.comixed;
  */
 
-import { User } from './models/user/user';
-import { Library } from './models/library';
-import { LibraryDisplay } from './models/library-display';
-import { LibraryScrape } from './models/library-scrape';
-import { Duplicates } from './models/duplicates';
+import { Role } from './role';
+import { Preference } from './preference';
 
-export interface AppState {
-  readonly user: User;
-  readonly library: Library;
-  readonly library_display: LibraryDisplay;
-  readonly library_scraping: LibraryScrape;
-  readonly duplicates: Duplicates;
+export interface User {
+  fetching: boolean;
+  token: string;
+  authenticating: boolean;
+  busy: boolean;
+  email: string;
+  authenticated: boolean;
+  first_login_date: number;
+  last_login_date: number;
+  roles: Role[];
+  preferences: Preference[];
 }

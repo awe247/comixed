@@ -1,6 +1,6 @@
 /*
  * ComiXed - A digital comic book library management application.
- * Copyright (C) 2017, The ComiXed Project
+ * Copyright (C) 2018, The ComiXed Project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,53 +52,42 @@ public class ComiXedAuthenticationProvider implements
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException
     {
-        this.logger.debug("Performing user authentication");
-
         String email = authentication.getName();
-        Object password = authentication.getCredentials();
+        String password = authentication.getCredentials().toString();
 
-        if (password == null)
+        logger.debug("Attempting to authenticate: email={}", email);
+
+        ComiXedUser user = userRepository.findByEmail(email);
+
+        if (user == null)
         {
-            this.logger.debug("No password provided");
+            logger.debug("No such user");
             return null;
         }
 
-        this.logger.debug("Authenticating user: email={}", email);
-
-        ComiXedUser dbuser = this.userRepository.findByEmail(email);
-
-        if (dbuser != null)
+        if (utils.createHash(password.getBytes()).equals(user.getPasswordHash()))
         {
-            String lihash = this.utils.createHash(password.toString().getBytes());
+            logger.debug("Passwords match!");
 
-            if (lihash.toUpperCase().equals(dbuser.getPasswordHash().toUpperCase()))
+            List<GrantedAuthority> roles = new ArrayList<>();
+
+            for (Role role : user.getRoles())
             {
-                List<GrantedAuthority> grantedAuths = new ArrayList<>();
-                for (Role role : dbuser.getRoles())
-                {
-                    logger.debug("Granting role: {}", role.getName());
-                    // we need to prepend "ROLE_" to the role for Tomcat to
-                    // acknowledge it
-                    grantedAuths.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
-                }
-                this.logger.debug("Successful authentication");
-                return new UsernamePasswordAuthenticationToken(email, password, grantedAuths);
+                logger.debug("Granting role: {}", role.getName());
+                roles.add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
             }
-        }
-        else
-        {
-            this.logger.debug("No such user");
+            return new UsernamePasswordAuthenticationToken(email, password, roles);
         }
 
-        this.logger.debug("Authentication failed");
+        logger.debug("Passwords did not match!");
+
         return null;
     }
 
     @Override
-    public boolean supports(Class<?> clazz)
+    public boolean supports(Class<?> authentication)
     {
-        this.logger.debug("Checking for support of class: {}", clazz.getName());
-        return clazz.equals(UsernamePasswordAuthenticationToken.class);
+        return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
 
 }

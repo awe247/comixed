@@ -45,6 +45,7 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { BlockUIModule } from 'primeng/blockui';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { PasswordModule } from 'primeng/password';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -61,7 +62,7 @@ import { ComicStoryComponent } from './ui/components/comic/comic-story/comic-sto
 import { ComicCreditsComponent } from './ui/components/comic/comic-credits/comic-credits.component';
 import { ComicPagesComponent } from './ui/components/comic/comic-pages/comic-pages.component';
 import { MainPageComponent } from './ui/pages/main-page/main-page.component';
-import { LoginComponent } from './login/login.component';
+import { LoginComponent } from './ui/components/login/login.component';
 import { AccountComponent } from './account/account.component';
 import { AlertService } from './services/alert.service';
 import { UserService } from './services/user.service';
@@ -74,6 +75,7 @@ import { ImportToolbarComponent } from './ui/components/import/import-toolbar/im
 import { SelectedComicsComponent } from './ui/components/import/selected-comics/selected-comics.component';
 import { FileDetailsCoverComponent } from './ui/components/file-details/file-details-cover/file-details-cover.component';
 import { StoreModule } from '@ngrx/store';
+import { userReducer } from './reducers/user.reducer';
 import { libraryReducer } from './reducers/library.reducer';
 import { libraryDisplayReducer } from './reducers/library-display.reducer';
 import { libraryScrapingReducer } from './reducers/library-scraping.reducer';
@@ -82,12 +84,14 @@ import { LibraryCoversComponent } from './ui/components/library/library-covers/l
 import { LibraryDetailsComponent } from './ui/components/library/library-details/library-details.component';
 import { IssueDetailsComponent } from './ui/components/library/issue-details/issue-details.component';
 import { EffectsModule } from '@ngrx/effects';
+import { UserEffects } from './effects/user.effects';
 import { LibraryEffects } from './effects/library.effects';
 import { LibraryScrapeEffects } from './effects/library-scrape.effects';
 import { DuplicatesEffects } from './effects/duplicates.effects';
 import { DuplicatePagesViewComponent } from './ui/views/library/duplicate-pages-view/duplicate-pages-view.component';
 import { PageHashViewComponent } from './ui/views/library/page-hash-view/page-hash-view.component';
 import { VolumeListComponent } from './ui/components/scraping/volume-list/volume-list.component';
+import { TokenStorage } from './storage/token.storage';
 
 @NgModule({
   declarations: [
@@ -144,6 +148,7 @@ import { VolumeListComponent } from './ui/components/scraping/volume-list/volume
     ProgressBarModule,
     BlockUIModule,
     ConfirmDialogModule,
+    PasswordModule,
     LoadingModule.forRoot({
       animationType: ANIMATION_TYPES.pulse,
       fullScreenBackdrop: true,
@@ -161,12 +166,14 @@ import { VolumeListComponent } from './ui/components/scraping/volume-list/volume
     }),
 
     StoreModule.forRoot({
+      user: userReducer,
       library: libraryReducer,
       library_display: libraryDisplayReducer,
       library_scraping: libraryScrapingReducer,
       duplicates: duplicatesReducer,
     }),
     EffectsModule.forRoot([
+      UserEffects,
       LibraryEffects,
       LibraryScrapeEffects,
       DuplicatesEffects,
@@ -181,6 +188,7 @@ import { VolumeListComponent } from './ui/components/scraping/volume-list/volume
       { provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true }
     ],
     ConfirmationService,
+    TokenStorage,
   ],
   bootstrap: [AppComponent]
 })
