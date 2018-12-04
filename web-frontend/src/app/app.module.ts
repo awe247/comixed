@@ -63,7 +63,6 @@ import { ComicCreditsComponent } from './ui/components/comic/comic-credits/comic
 import { ComicPagesComponent } from './ui/components/comic/comic-pages/comic-pages.component';
 import { MainPageComponent } from './ui/pages/main-page/main-page.component';
 import { LoginComponent } from './ui/components/login/login.component';
-import { AccountComponent } from './account/account.component';
 import { AlertService } from './services/alert.service';
 import { UserService } from './services/user.service';
 import { MenubarComponent } from './ui/components/menubar/menubar.component';
@@ -92,13 +91,14 @@ import { DuplicatePagesViewComponent } from './ui/views/library/duplicate-pages-
 import { PageHashViewComponent } from './ui/views/library/page-hash-view/page-hash-view.component';
 import { VolumeListComponent } from './ui/components/scraping/volume-list/volume-list.component';
 import { TokenStorage } from './storage/token.storage';
+import { AccountPageComponent } from './ui/pages/account/account-page/account-page.component';
+import { AccountPreferencesComponent } from './ui/components/account/account-preferences/account-preferences.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MainPageComponent,
     LoginComponent,
-    AccountComponent,
     MenubarComponent,
     ComicDetailsComponent,
     ComicReaderComponent,
@@ -120,6 +120,8 @@ import { TokenStorage } from './storage/token.storage';
     DuplicatePagesViewComponent,
     PageHashViewComponent,
     VolumeListComponent,
+    AccountPageComponent,
+    AccountPreferencesComponent,
   ],
   imports: [
     BrowserModule,
