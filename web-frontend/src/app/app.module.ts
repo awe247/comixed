@@ -46,6 +46,7 @@ import { BlockUIModule } from 'primeng/blockui';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { PasswordModule } from 'primeng/password';
+import { PickListModule } from 'primeng/picklist';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -78,7 +79,8 @@ import { userReducer } from './reducers/user.reducer';
 import { importingReducer } from './reducers/importing.reducer';
 import { libraryReducer } from './reducers/library.reducer';
 import { libraryDisplayReducer } from './reducers/library-display.reducer';
-import { libraryScrapingReducer } from './reducers/library-scraping.reducer';
+import { singleComicScrapingReducer } from './reducers/single-comic-scraping.reducer';
+import { multipleComicsScrapingReducer } from './reducers/multiple-comics-scraping.reducer';
 import { duplicatesReducer } from './reducers/duplicates.reducer';
 import { LibraryCoversComponent } from './ui/components/library/library-covers/library-covers.component';
 import { LibraryDetailsComponent } from './ui/components/library/library-details/library-details.component';
@@ -87,7 +89,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { UserEffects } from './effects/user.effects';
 import { ImportingEffects } from './effects/importing.effects';
 import { LibraryEffects } from './effects/library.effects';
-import { LibraryScrapeEffects } from './effects/library-scrape.effects';
+import { SingleComicScrapingEffects } from './effects/single-comic-scraping.effects';
 import { DuplicatesEffects } from './effects/duplicates.effects';
 import { DuplicatePagesViewComponent } from './ui/views/library/duplicate-pages-view/duplicate-pages-view.component';
 import { PageHashViewComponent } from './ui/views/library/page-hash-view/page-hash-view.component';
@@ -96,6 +98,11 @@ import { TokenStorage } from './storage/token.storage';
 import { AccountPageComponent } from './ui/pages/account/account-page/account-page.component';
 import { AccountPreferencesComponent } from './ui/components/account/account-preferences/account-preferences.component';
 import { UserDetailsComponent } from './ui/components/account/user-details/user-details.component';
+import { MultipleComicScrapingComponent } from './ui/components/scraping/multiple-comic-scraping/multiple-comic-scraping.component';
+import { LibraryScrapingToolbarComponent } from './ui/components/library/library-scraping-toolbar/library-scraping-toolbar.component';
+import { LibraryScrapingSelectionComponent } from './ui/components/library/library-scraping-selection/library-scraping-selection.component';
+import { LibraryScrapingViewComponent } from './ui/views/library/library-scraping-view/library-scraping-view.component';
+import { ComicListComponent } from './ui/components/library/comic-list/comic-list.component';
 
 @NgModule({
   declarations: [
@@ -126,6 +133,11 @@ import { UserDetailsComponent } from './ui/components/account/user-details/user-
     AccountPageComponent,
     AccountPreferencesComponent,
     UserDetailsComponent,
+    MultipleComicScrapingComponent,
+    LibraryScrapingToolbarComponent,
+    LibraryScrapingSelectionComponent,
+    LibraryScrapingViewComponent,
+    ComicListComponent,
   ],
   imports: [
     BrowserModule,
@@ -155,6 +167,7 @@ import { UserDetailsComponent } from './ui/components/account/user-details/user-
     BlockUIModule,
     ConfirmDialogModule,
     PasswordModule,
+    PickListModule,
     LoadingModule.forRoot({
       animationType: ANIMATION_TYPES.pulse,
       fullScreenBackdrop: true,
@@ -176,14 +189,15 @@ import { UserDetailsComponent } from './ui/components/account/user-details/user-
       importing: importingReducer,
       library: libraryReducer,
       library_display: libraryDisplayReducer,
-      library_scraping: libraryScrapingReducer,
+      single_comic_scraping: singleComicScrapingReducer,
+      multiple_comic_scraping: multipleComicsScrapingReducer,
       duplicates: duplicatesReducer,
     }),
     EffectsModule.forRoot([
       UserEffects,
       ImportingEffects,
       LibraryEffects,
-      LibraryScrapeEffects,
+      SingleComicScrapingEffects,
       DuplicatesEffects,
     ]),
   ],

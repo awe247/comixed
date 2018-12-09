@@ -17,20 +17,28 @@
  * org.comixed;
  */
 
-import { User } from './models/user/user';
-import { Importing } from './models/import/importing';
-import { Library } from './models/library';
-import { LibraryDisplay } from './models/library-display';
-import { SingleComicScraping } from './models/scraping/single-comic-scraping';
-import { MultipleComicsScraping } from './models/scraping/multiple-comics-scraping';
-import { Duplicates } from './models/duplicates';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-export interface AppState {
-  readonly user: User;
-  readonly importing: Importing;
-  readonly library: Library;
-  readonly library_display: LibraryDisplay;
-  readonly single_comic_scraping: SingleComicScraping;
-  readonly multiple_comic_scraping: MultipleComicsScraping;
-  readonly duplicates: Duplicates;
-}
+import { LibraryScrapingToolbarComponent } from './library-scraping-toolbar.component';
+
+describe('LibraryScrapingToolbarComponent', () => {
+  let component: LibraryScrapingToolbarComponent;
+  let fixture: ComponentFixture<LibraryScrapingToolbarComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [LibraryScrapingToolbarComponent]
+    })
+      .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(LibraryScrapingToolbarComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

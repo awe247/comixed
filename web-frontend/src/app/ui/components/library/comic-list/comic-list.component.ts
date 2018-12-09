@@ -17,20 +17,26 @@
  * org.comixed;
  */
 
-import { User } from './models/user/user';
-import { Importing } from './models/import/importing';
-import { Library } from './models/library';
-import { LibraryDisplay } from './models/library-display';
-import { SingleComicScraping } from './models/scraping/single-comic-scraping';
-import { MultipleComicsScraping } from './models/scraping/multiple-comics-scraping';
-import { Duplicates } from './models/duplicates';
+import { Component, Input, OnInit } from '@angular/core';
+import { Comic } from '../../../../models/comics/comic';
+import { ComicService } from '../../../../services/comic.service';
 
-export interface AppState {
-  readonly user: User;
-  readonly importing: Importing;
-  readonly library: Library;
-  readonly library_display: LibraryDisplay;
-  readonly single_comic_scraping: SingleComicScraping;
-  readonly multiple_comic_scraping: MultipleComicsScraping;
-  readonly duplicates: Duplicates;
+@Component({
+  selector: 'app-comic-list',
+  templateUrl: './comic-list.component.html',
+  styleUrls: ['./comic-list.component.css']
+})
+export class ComicListComponent implements OnInit {
+  @Input() comics: Array<Comic>;
+
+  constructor(
+    private comic_service: ComicService,
+  ) { }
+
+  ngOnInit() {
+  }
+
+  get_cover_url(comic: Comic): string {
+    return this.comic_service.get_cover_url_for_comic(comic);
+  }
 }
