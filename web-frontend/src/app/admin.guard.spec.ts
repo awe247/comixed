@@ -17,19 +17,18 @@
  * org.comixed;
  */
 
-import { Role } from './role';
-import { Preference } from './preference';
+import { TestBed, async, inject } from '@angular/core/testing';
 
-export interface User {
-  fetching: boolean;
-  token: string;
-  authenticating: boolean;
-  busy: boolean;
-  email: string;
-  authenticated: boolean;
-  is_admin: boolean;
-  first_login_date: number;
-  last_login_date: number;
-  roles: Role[];
-  preferences: Preference[];
-}
+import { RouteGuard } from './route.guard';
+
+describe('RouteGuard', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [RouteGuard]
+    });
+  });
+
+  it('should ...', inject([RouteGuard], (guard: RouteGuard) => {
+    expect(guard).toBeTruthy();
+  }));
+});

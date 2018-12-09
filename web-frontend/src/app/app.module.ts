@@ -103,6 +103,8 @@ import { LibraryScrapingToolbarComponent } from './ui/components/library/library
 import { LibraryScrapingSelectionComponent } from './ui/components/library/library-scraping-selection/library-scraping-selection.component';
 import { LibraryScrapingViewComponent } from './ui/views/library/library-scraping-view/library-scraping-view.component';
 import { ComicListComponent } from './ui/components/library/comic-list/comic-list.component';
+import { AdminGuard } from './admin.guard';
+import { ReaderGuard } from './reader.guard';
 
 @NgModule({
   declarations: [
@@ -211,6 +213,8 @@ import { ComicListComponent } from './ui/components/library/comic-list/comic-lis
     ],
     ConfirmationService,
     TokenStorage,
+    AdminGuard,
+    ReaderGuard,
   ],
   bootstrap: [AppComponent]
 })
