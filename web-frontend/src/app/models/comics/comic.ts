@@ -19,12 +19,15 @@
 
 import { Page } from './page';
 import { ComicCredit } from './comic-credit';
+import { ScanType } from './scan-type';
+import { ComicFormat } from './comic-format';
 
 export interface Comic {
   id: number;
   filename: string;
   base_filename: string;
   publisher: string;
+  imprint: string;
   series: string;
   volume: string;
   issue_number: string;
@@ -49,4 +52,6 @@ export interface Comic {
   blocked_page_count: number;
   deleted_page_count: number;
   credits: ComicCredit[];
+  scan_type: ScanType;
+  format: ComicFormat;
 }

@@ -35,6 +35,8 @@
 </ng-template> <ng-template pTemplate='header'>
 <tr>
   <th>Cover</th>
+  <th [pSortableColumn]='"publisher"'><p-sortIcon
+      [field]='"publisher"'></p-sortIcon>Publisher</th>
   <th [pSortableColumn]='"series"'><p-sortIcon [field]='"series"'></p-sortIcon>Series</th>
   <th [pSortableColumn]='"volume"'><p-sortIcon [field]='"volume"'></p-sortIcon>Volume</th>
   <th [pSortableColumn]='"issue_number"'><p-sortIcon
@@ -45,6 +47,7 @@
   <th [pSortableColumn]='"added_date"'><p-sortIcon
       [field]='"added_date"'></p-sortIcon>Date Added</th>
   <th></th>
+  <th></th>
 </tr>
 </ng-template> <ng-template
   pTemplate='body'
@@ -54,12 +57,31 @@
     [style.height]='"auto"'
     [style.width]='"100%"'
     [src]='get_cover_url(comic)'>
+  <td>{{ comic.imprint || comic.publisher || 'Unknown'}}<span
+    *ngIf='comic.imprint'> ({{ comic.publisher }})</span>
+  </td>
   <td>{{ comic.series }}</td>
   <td>{{ comic.volume }}</td>
   <td>{{ comic.issue_number }}</td>
   <td>{{ comic.page_count || 0}}</td>
   <td>{{ comic.cover_date | date }}</td>
   <td>{{ comic.added_date | date }}</td>
+  <td>
+    <div class='ui-g'>
+      <div class='ui-g-12'>
+        <b>Format</b>
+      </div>
+      <div class='ui-g-12'>{{ comic.format.name }}</div>
+      <div
+        *ngIf='comic.scan_type'
+        class='ui-g-12'>
+        <strong>Scan Type</strong>
+      </div>
+      <div
+        *ngIf='comic.scan_type'
+        class='ui-g-12'>{{ comic.scan_type.name }}</div>
+    </div>
+  </td>
   <td>
     <button
       pButton

@@ -1,6 +1,6 @@
 /*
  * ComiXed - A digital comic book library management application.
- * Copyright (C) 2018, The ComiXed Project
+ * Copyright (C) 2017, The ComiXed Project
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,14 +17,7 @@
  * org.comixed;
  */
 
-import { Comic } from './comics/comic';
-import { ScanType } from './comics/scan-type';
-import { ComicFormat } from './comics/comic-format';
-
-export interface Library {
-  busy: boolean;
-  last_comic_date: string;
-  scan_types: Array<ScanType>;
-  formats: Array<ComicFormat>;
-  comics: Array<Comic>;
+export interface ScanType {
+  id: number;
+  name: string;
 }

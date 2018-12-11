@@ -26,6 +26,8 @@ import 'rxjs/add/operator/switchMap';
 import * as LibraryActions from '../actions/library.actions';
 import { ComicService } from '../services/comic.service';
 import { Comic } from '../models/comics/comic';
+import { ScanType } from '../models/comics/scan-type';
+import { ComicFormat } from '../models/comics/comic-format';
 
 @Injectable()
 export class LibraryEffects {
@@ -33,6 +35,42 @@ export class LibraryEffects {
     private actions$: Actions,
     private comic_service: ComicService,
   ) { }
+
+  @Effect()
+  library_get_scan_types$: Observable<Action> = this.actions$
+    .ofType<LibraryActions.LibraryGetScanTypes>(LibraryActions.LIBRARY_GET_SCAN_TYPES)
+    .switchMap(action =>
+      this.comic_service.fetch_scan_types()
+        .map((scan_types: Array<ScanType>) => new LibraryActions.LibrarySetScanTypes({ scan_types: scan_types })));
+
+  @Effect()
+  library_set_scan_type$: Observable<Action> = this.actions$
+    .ofType<LibraryActions.LibrarySetScanType>(LibraryActions.LIBRARY_SET_SCAN_TYPE)
+    .map(action => action.payload)
+    .switchMap(action =>
+      this.comic_service.set_scan_type(action.comic, action.scan_type)
+        .map(() => new LibraryActions.LibraryScanTypeSet({
+          comic: action.comic,
+          scan_type: action.scan_type,
+        })));
+
+  @Effect()
+  library_get_formats$: Observable<Action> = this.actions$
+    .ofType<LibraryActions.LibraryGetFormats>(LibraryActions.LIBRARY_GET_FORMATS)
+    .switchMap(action =>
+      this.comic_service.fetch_formats()
+        .map((formats: Array<ComicFormat>) => new LibraryActions.LibrarySetFormats({ formats: formats })));
+
+  @Effect()
+  library_set_format$: Observable<Action> = this.actions$
+    .ofType<LibraryActions.LibrarySetFormat>(LibraryActions.LIBRARY_SET_FORMAT)
+    .map(action => action.payload)
+    .switchMap(action =>
+      this.comic_service.set_format(action.comic, action.format)
+        .map(() => new LibraryActions.LibraryFormatSet({
+          comic: action.comic,
+          format: action.format,
+        })));
 
   @Effect()
   library_start_updating$: Observable<Action> = this.actions$

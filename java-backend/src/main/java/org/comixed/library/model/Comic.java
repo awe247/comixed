@@ -40,6 +40,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
@@ -116,6 +117,11 @@ public class Comic
     @JsonProperty
     @JsonView(View.ComicList.class)
     private String publisher;
+
+    @Column(name = "imprint")
+    @JsonProperty
+    @JsonView(View.ComicList.class)
+    private String imprint;
 
     @Column(name = "series")
     @JsonProperty
@@ -235,6 +241,22 @@ public class Comic
     @JsonProperty("credits")
     @JsonView(View.ComicList.class)
     private Set<Credit> credits = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "scan_type_id")
+    @JsonProperty("scan_type")
+    @JsonView(
+    {View.ComicList.class,
+     View.PageList.class})
+    private ScanType scanType;
+
+    @ManyToOne
+    @JoinColumn(name = "format_id")
+    @JsonProperty("format")
+    @JsonView(
+    {View.ComicList.class,
+     View.PageList.class})
+    private ComicFormat format;
 
     @Transient
     @JsonIgnore
@@ -566,6 +588,11 @@ public class Comic
         return FilenameUtils.removeExtension(this.filename);
     }
 
+    public ComicFormat getFormat()
+    {
+        return this.format;
+    }
+
     /**
      * Returns the comic's ID.
      *
@@ -706,6 +733,11 @@ public class Comic
     public String getPublisher()
     {
         return this.publisher;
+    }
+
+    protected ScanType getScanType()
+    {
+        return this.scanType;
     }
 
     /**
@@ -971,6 +1003,17 @@ public class Comic
         this.filename = filename;
     }
 
+    public void setFormat(ComicFormat format)
+    {
+        this.format = format;
+    }
+
+    public void setImprint(String imprint)
+    {
+        this.logger.debug("Setting imprint={}", imprint);
+        this.imprint = imprint;
+    }
+
     /**
      * Sets the issue number for the comic.
      *
@@ -1024,6 +1067,11 @@ public class Comic
     {
         this.logger.debug("Setting publisher=" + publisher);
         this.publisher = publisher;
+    }
+
+    public void setScanType(ScanType scanType)
+    {
+        this.scanType = scanType;
     }
 
     /**

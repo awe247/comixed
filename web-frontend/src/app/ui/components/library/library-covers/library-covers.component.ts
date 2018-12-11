@@ -18,7 +18,12 @@
  */
 
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../../app.state';
+import * as LibraryActions from '../../../../actions/library.actions';
 import { Comic } from '../../../../models/comics/comic';
+import { ScanType } from '../../../../models/comics/scan-type';
+import { ComicFormat } from '../../../../models/comics/comic-format';
 import { Library } from '../../../../models/library';
 import { ComicService } from '../../../../services/comic.service';
 import { SelectItem } from 'primeng/api';
@@ -44,11 +49,29 @@ export class LibraryCoversComponent implements OnInit {
   @Output() open = new EventEmitter<Comic>();
   @Output() delete = new EventEmitter<Comic>();
 
+  public scan_types: Array<SelectItem>;
+  public formats: Array<SelectItem>;
+
   constructor(
     private comic_service: ComicService,
+    private store: Store<AppState>,
   ) { }
 
   ngOnInit() {
+    this.scan_types = [];
+    this.library.scan_types.forEach((scan_type: ScanType) => {
+      this.scan_types.push({
+        label: scan_type.name,
+        value: scan_type,
+      });
+    });
+    this.formats = [];
+    this.library.formats.forEach((format: ComicFormat) => {
+      this.formats.push({
+        label: format.name,
+        value: format,
+      });
+    });
   }
 
   set_sort_order(sort_order: string): void {
@@ -78,5 +101,19 @@ export class LibraryCoversComponent implements OnInit {
 
   delete_comic(comic: Comic): void {
     this.delete.next(comic);
+  }
+
+  set_scan_type(comic: Comic, scan_type: ScanType): void {
+    this.store.dispatch(new LibraryActions.LibrarySetScanType({
+      comic: comic,
+      scan_type: scan_type,
+    }));
+  }
+
+  set_comic_format(comic: Comic, format: ComicFormat): void {
+    this.store.dispatch(new LibraryActions.LibrarySetFormat({
+      comic: comic,
+      format: format,
+    }));
   }
 }
