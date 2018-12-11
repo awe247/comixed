@@ -172,6 +172,11 @@ public class Comic
     @JsonView(View.ComicList.class)
     private String title;
 
+    @Column(name = "sort_name")
+    @JsonProperty
+    @JsonView(View.ComicList.class)
+    private String sortName;
+
     @Column(name = "description")
     @Lob
     @JsonProperty
@@ -603,6 +608,11 @@ public class Comic
         return this.id;
     }
 
+    public String getImprint()
+    {
+        return this.imprint;
+    }
+
     public int getIndexFor(Page page)
     {
         if (this.pages.contains(page)) return this.pages.indexOf(page);
@@ -735,7 +745,12 @@ public class Comic
         return this.publisher;
     }
 
-    protected ScanType getScanType()
+    /**
+     * Returns the scan type for the comic.
+     *
+     * @return the scan type
+     */
+    public ScanType getScanType()
     {
         return this.scanType;
     }
@@ -748,6 +763,11 @@ public class Comic
     public String getSeries()
     {
         return this.series;
+    }
+
+    public String getSortName()
+    {
+        return this.sortName;
     }
 
     /**
@@ -1084,6 +1104,11 @@ public class Comic
     {
         this.logger.debug("Setting series=" + name);
         this.series = name;
+    }
+
+    public void setSortName(String sortName)
+    {
+        this.sortName = sortName;
     }
 
     /**
