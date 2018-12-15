@@ -86,11 +86,11 @@ export class ComicDetailsComponent implements OnInit, OnDestroy {
       (library: Library) => {
         this.library = library;
 
-        // if (this.comic === null) {
-        this.comic = library.comics.find((comic: Comic) => {
-          return comic.id === this.comic_id;
-        }) || null;
-        // }
+        if (this.comic === null) {
+          this.comic = library.comics.find((comic: Comic) => {
+            return comic.id === this.comic_id;
+          }) || null;
+        }
       });
     this.single_comic_scraping_subscription = this.single_comic_scraping$.subscribe(
       (library_scrape: SingleComicScraping) => {
@@ -106,7 +106,6 @@ export class ComicDetailsComponent implements OnInit, OnDestroy {
       const id = +params['id'];
       this.comic_service.load_comic_from_remote(id).subscribe(
         (comic: Comic) => {
-          this.alert_service.show_busy_message('');
           if (comic) {
             this.comic = comic;
           } else {
@@ -116,7 +115,6 @@ export class ComicDetailsComponent implements OnInit, OnDestroy {
         },
         error => {
           this.alert_service.show_error_message('Error while retrieving comic...', error);
-          this.alert_service.show_busy_message('');
         },
         () => {
           this.load_comic_details();
