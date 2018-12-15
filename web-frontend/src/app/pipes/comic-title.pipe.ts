@@ -17,21 +17,15 @@
  * org.comixed;
  */
 
-import { Component, OnInit, Input } from '@angular/core';
-import { ComicFile } from '../../../../models/import/comic-file';
+import { Pipe, PipeTransform } from '@angular/core';
+import { Comic } from '../models/comics/comic';
 
-@Component({
-  selector: 'app-file-details-cover',
-  templateUrl: './file-details-cover.component.html',
-  styleUrls: ['./file-details-cover.component.css']
+@Pipe({
+  name: 'comic_title'
 })
-export class FileDetailsCoverComponent implements OnInit {
-  @Input() file_details: ComicFile;
-  @Input() width: string;
-  @Input() height: string;
+export class ComicTitlePipe implements PipeTransform {
 
-  constructor() { }
-
-  ngOnInit() {
+  transform(value: Comic, args?: any): any {
+    return `${value.series || 'Unknown'} v${value.volume || 'Unknown'} #${value.issue_number || '??'}`;
   }
 }

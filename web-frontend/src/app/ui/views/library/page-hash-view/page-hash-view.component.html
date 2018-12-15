@@ -1,7 +1,7 @@
 <div class='ui-g'>
   <div class='ui-g-2 ui-sm-4'>
     <p-card> <p-header> <img
-      [src]='get_image_url()'
+      src='{{ duplicates.current_duplicates[0] | comic_page_url }}'
       [style.width]='"100%"'
       [style.height]='"auto"'> </p-header> <p-footer>
     <button
@@ -28,10 +28,10 @@
       let-duplicate>
     <tr>
       <td><img
-        [src]='get_cover_url(duplicate.comic)'
+        src='{{ duplicate.comic | comic_cover_url }}'
         width='128px'
         height='auto'></td>
-      <td>{{ get_label_for_comic(duplicate.comic) }}</td>
+      <td>{{ duplicate.comic | comic_title }}</td>
       <td>{{ duplicate.index }}</td>
       <td>{{ duplicate.comic.filename }}</td>
       <td>{{ duplicate.filename }}</td>
@@ -46,7 +46,8 @@
           pButton
           icon='fa fa-trash'
           label='Undelete'
-          (click)='undelete_page(duplicate)'></button></tr>
+          (click)='undelete_page(duplicate)'></button>
+    </tr>
     </ng-template> </p-table>
   </div>
 </div>

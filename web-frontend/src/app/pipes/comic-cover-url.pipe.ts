@@ -17,21 +17,19 @@
  * org.comixed;
  */
 
-import { Component, OnInit, Input } from '@angular/core';
-import { ComicFile } from '../../../../models/import/comic-file';
+import { Pipe, PipeTransform } from '@angular/core';
+import { COMIC_SERVICE_API_URL } from '../services/comic.service';
+import { Comic } from '../models/comics/comic';
 
-@Component({
-  selector: 'app-file-details-cover',
-  templateUrl: './file-details-cover.component.html',
-  styleUrls: ['./file-details-cover.component.css']
+@Pipe({
+  name: 'comic_cover_url'
 })
-export class FileDetailsCoverComponent implements OnInit {
-  @Input() file_details: ComicFile;
-  @Input() width: string;
-  @Input() height: string;
-
-  constructor() { }
-
-  ngOnInit() {
+export class ComicCoverUrlPipe implements PipeTransform {
+  transform(comic: Comic): string {
+    if (comic.missing) {
+      return `/assets/img/missing.png`;
+    } else {
+      return `${COMIC_SERVICE_API_URL}/comics/${comic.id}/pages/0/content`;
+    }
   }
 }

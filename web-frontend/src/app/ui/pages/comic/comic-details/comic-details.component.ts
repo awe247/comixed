@@ -55,7 +55,6 @@ export class ComicDetailsComponent implements OnInit, OnDestroy {
   private comic_id = -1;
   public comic = null;
   protected current_tab: number;
-  protected title: string;
   protected page_size: number;
   protected current_page: number;
 
@@ -115,9 +114,6 @@ export class ComicDetailsComponent implements OnInit, OnDestroy {
         },
         error => {
           this.alert_service.show_error_message('Error while retrieving comic...', error);
-        },
-        () => {
-          this.load_comic_details();
         });
     });
     this.activatedRoute.queryParams.subscribe(params => {
@@ -143,10 +139,6 @@ export class ComicDetailsComponent implements OnInit, OnDestroy {
     this.update_params(CURRENT_PAGE_PARAMETER, `${this.current_page}`);
   }
 
-  get_cover_url(): string {
-    return this.comic_service.get_cover_url_for_comic(this.comic);
-  }
-
   set_current_tab(current_tab: number): void {
     this.current_tab = current_tab;
     this.update_params(this.TAB_PARAMETER, `${this.current_tab}`);
@@ -167,12 +159,6 @@ export class ComicDetailsComponent implements OnInit, OnDestroy {
       return parseInt(value, 10);
     }
     return defvalue;
-  }
-
-  load_comic_details(): void {
-    this.title = `${this.comic.series || 'Unknown'} ` +
-      `(v${this.comic.volume || this.comic.volume || '????'}) ` +
-      `#${this.comic.issue_number || '??'}`;
   }
 }
 

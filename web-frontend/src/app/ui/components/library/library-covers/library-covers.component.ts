@@ -45,7 +45,6 @@ export class LibraryCoversComponent implements OnInit {
   @Output() changeRows = new EventEmitter<number>();
   @Output() changeCoverSize = new EventEmitter<number>();
   @Output() saveCoverSize = new EventEmitter<number>();
-  @Output() comicSelected = new EventEmitter<Comic>();
   @Output() open = new EventEmitter<Comic>();
   @Output() delete = new EventEmitter<Comic>();
 
@@ -82,17 +81,8 @@ export class LibraryCoversComponent implements OnInit {
     this.changeRows.next(rows);
   }
 
-  get_cover_url(comic: Comic): string {
-    return this.comic_service.get_cover_url_for_comic(comic);
-  }
-
   get_download_link(comic: Comic): string {
     return this.comic_service.get_download_link_for_comic(comic.id);
-  }
-
-  set_selected_comic(event: Event, comic: Comic): void {
-    this.comicSelected.next(comic);
-    event.preventDefault();
   }
 
   open_comic(comic: Comic): void {

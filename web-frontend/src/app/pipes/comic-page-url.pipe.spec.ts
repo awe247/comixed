@@ -17,21 +17,11 @@
  * org.comixed;
  */
 
-import { Component, OnInit, Input } from '@angular/core';
-import { ComicFile } from '../../../../models/import/comic-file';
+import { ComicPageUrlPipe } from './comic-page-url.pipe';
 
-@Component({
-  selector: 'app-file-details-cover',
-  templateUrl: './file-details-cover.component.html',
-  styleUrls: ['./file-details-cover.component.css']
-})
-export class FileDetailsCoverComponent implements OnInit {
-  @Input() file_details: ComicFile;
-  @Input() width: string;
-  @Input() height: string;
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-}
+describe('ComicPageUrlPipe', () => {
+  it('create an instance', () => {
+    const pipe = new ComicPageUrlPipe();
+    expect(pipe).toBeTruthy();
+  });
+});

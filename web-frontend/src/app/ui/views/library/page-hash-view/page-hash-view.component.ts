@@ -23,7 +23,6 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../app.state';
 import * as DuplicatesActions from '../../../../actions/duplicate-pages.actions';
-import { ComicService } from '../../../../services/comic.service';
 import { Duplicates } from '../../../../models/duplicates';
 import { Comic } from '../../../../models/comics/comic';
 import { Page } from '../../../../models/comics/page';
@@ -39,24 +38,11 @@ export class PageHashViewComponent implements OnInit {
 
   constructor(
     private store: Store<AppState>,
-    private comic_service: ComicService,
     private activated_route: ActivatedRoute,
     private router: Router,
   ) { }
 
   ngOnInit() {
-  }
-
-  get_image_url(): string {
-    return this.comic_service.get_url_for_page_by_id(this.duplicates.current_duplicates[0].id);
-  }
-
-  get_cover_url(comic: Comic): string {
-    return this.comic_service.get_cover_url_for_comic(comic);
-  }
-
-  get_label_for_comic(comic: Comic): string {
-    return this.comic_service.get_label_for_comic(comic);
   }
 
   close_page_view(): void {

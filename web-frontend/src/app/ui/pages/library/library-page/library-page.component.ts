@@ -75,8 +75,6 @@ export class LibraryPageComponent implements OnInit, OnDestroy {
   library_display: LibraryDisplay;
 
   comics: Array<Comic>;
-  selected_comic: Comic;
-  protected show_dialog = false;
 
   rows_options: Array<SelectItem>;
   rows: number;
@@ -192,21 +190,8 @@ export class LibraryPageComponent implements OnInit, OnDestroy {
     this.library_subscription.unsubscribe();
   }
 
-  set_selected_comic(comic: Comic): void {
-    this.selected_comic = comic;
-    this.show_dialog = true;
-  }
-
-  hide_dialog(): void {
-    this.show_dialog = false;
-  }
-
   get_download_link(comic: Comic): string {
     return this.comic_service.get_download_link_for_comic(comic.id);
-  }
-
-  get_cover_url(comic: Comic): string {
-    return this.comic_service.get_cover_url_for_comic(comic);
   }
 
   set_current_tab(current_tab: number): void {
@@ -253,7 +238,7 @@ export class LibraryPageComponent implements OnInit, OnDestroy {
 
   delete_comic(comic: Comic): void {
     this.confirm_service.confirm({
-      header: `Delete ${this.comic_service.get_label_for_comic(comic)}?`,
+      header: `Delete This Comic?`,
       message: 'Are you sure? This will not delete the file, only remove it from the library.',
       icon: 'fa fa-exclamation',
       accept: () => {
