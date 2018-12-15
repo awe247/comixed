@@ -29,14 +29,19 @@ import java.util.List;
 import org.comixed.library.metadata.ComicDataAdaptor;
 import org.comixed.library.model.Comic;
 import org.comixed.library.model.ComicFormat;
+import org.comixed.library.model.LibraryStatus;
 import org.comixed.library.model.ScanType;
 import org.comixed.library.model.View;
 import org.comixed.library.model.View.ComicDetails;
 import org.comixed.repositories.ComicFormatRepository;
 import org.comixed.repositories.ComicRepository;
 import org.comixed.repositories.ScanTypeRepository;
+import org.comixed.tasks.AddComicWorkerTask;
+import org.comixed.tasks.RescanComicWorkerTask;
+import org.comixed.tasks.Worker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
@@ -66,6 +71,12 @@ public class ComicController
 
     @Autowired
     private ComicDataAdaptor comicDataAdaptor;
+
+    @Autowired
+    private Worker worker;
+
+    @Autowired
+    private ObjectFactory<RescanComicWorkerTask> taskFactory;
 
     @RequestMapping(value = "/{id}",
                     method = RequestMethod.DELETE)
@@ -174,15 +185,23 @@ public class ComicController
     @RequestMapping(value = "/since/{timestamp}",
                     method = RequestMethod.GET)
     @JsonView(View.ComicList.class)
-    public List<Comic> getComicsAddedSince(@PathVariable("timestamp") long timestamp,
-                                           @RequestParam(value = "timeout",
-                                                         required = false,
-                                                         defaultValue = "0") long timeout) throws InterruptedException
+    public LibraryStatus getComicsAddedSince(@PathVariable("timestamp") long timestamp,
+                                             @RequestParam(value = "timeout",
+                                                           required = false,
+                                                           defaultValue = "0") long timeout) throws InterruptedException
     {
         Date latestDate = new Date(timestamp);
         boolean done = false;
         long returnBy = System.currentTimeMillis() + timeout;
         List<Comic> result = null;
+
+        this.logger.debug("Getting pending import count...");
+        int importCount = this.worker.getCountFor(AddComicWorkerTask.class);
+        this.logger.debug("Import count is {}", importCount);
+
+        this.logger.debug("Getting the rescan status..");
+        int rescanCount = this.worker.getCountFor(RescanComicWorkerTask.class);
+        this.logger.debug("Rescan count is {}", rescanCount);
 
         this.logger.debug("Looking for comics added since {}: timeout={}", latestDate, timeout);
 
@@ -190,7 +209,7 @@ public class ComicController
         {
             result = this.comicRepository.findByDateAddedGreaterThan(latestDate);
 
-            if ((result.size() == 0) && (System.currentTimeMillis() <= returnBy))
+            if ((result.size() == 0) && (System.currentTimeMillis() <= returnBy) && (rescanCount == 0))
             {
                 Thread.sleep(1000);
             }
@@ -203,7 +222,7 @@ public class ComicController
 
         this.logger.debug("Found {} comics", result.size());
 
-        return result;
+        return new LibraryStatus(result, rescanCount, importCount);
     }
 
     @RequestMapping(value = "/{id}/summary",
@@ -227,19 +246,30 @@ public class ComicController
         return comic;
     }
 
-    @RequestMapping(value = "/count",
-                    method = RequestMethod.GET)
-    public long getCount()
-    {
-        return this.comicRepository.count();
-    }
-
     @RequestMapping(value = "/scan_types",
                     method = RequestMethod.GET)
     public Iterable<ScanType> getScanTypes()
     {
         this.logger.debug("Fetching all scan types");
         return this.scanTypeRepository.findAll();
+    }
+
+    @RequestMapping(value = "/rescan",
+                    method = RequestMethod.POST)
+    public void rescanComics()
+    {
+        this.logger.debug("Rescanning comics in the library");
+
+        Iterable<Comic> comics = this.comicRepository.findAll();
+
+        for (Comic comic : comics)
+        {
+            this.logger.debug("Queueing comic for rescan: {}", comic.getFilename());
+            RescanComicWorkerTask task = this.taskFactory.getObject();
+
+            task.setComic(comic);
+            this.worker.addTasksToQueue(task);
+        }
     }
 
     @RequestMapping(value = "/{id}/format",

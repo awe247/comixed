@@ -1,4 +1,16 @@
 <p-confirmDialog></p-confirmDialog>
+<div class='ui-g'>
+  <div class='ui-g-12'>
+    <p-toolbar>
+    <button
+      pButton
+      type='button'
+      label='Rescan Library'
+      [disabled]='!can_rescan()'
+      (click)='rescan_library()'></button>
+    </p-toolbar>
+  </div>
+</div>
 <p-tabView
   [activeIndex]='current_tab'
   (onChange)='set_current_tab($event.index)'> <p-tabPanel

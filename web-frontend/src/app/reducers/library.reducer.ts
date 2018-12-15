@@ -25,6 +25,8 @@ import * as LibraryActions from '../actions/library.actions';
 const initial_state: Library = {
   busy: false,
   last_comic_date: '0',
+  rescan_count: 0,
+  import_count: 0,
   scan_types: [],
   formats: [],
   comics: [],
@@ -114,23 +116,42 @@ export function libraryReducer(
       };
 
     case LibraryActions.LIBRARY_MERGE_NEW_COMICS:
-      const comics = state.comics.concat(action.payload.comics);
-      let last_comic_date = '0';
+      const comics = state.comics;
+      if (action.payload.comics.length > 0) {
+        // merge the new comics into the existing comics
+        action.payload.comics.forEach((comic: Comic) => {
+          // if we already have the comic then merge their content, otherwise add it to the library
+          const index = comics.findIndex((found: Comic) => {
+            return found.id === comic.id;
+          });
+          if (index !== -1) {
+            Object.assign(comics[index], comic);
+          } else {
+            comics.push(comic);
+          }
+        });
+      }
+      // find the latest comic date
+      let last_comic = null;
+
       if (comics.length > 0) {
-        last_comic_date = comics.reduce((last: Comic, current: Comic) => {
+        last_comic = comics.reduce((last: Comic, current: Comic) => {
           const last_added_date = parseInt(last.added_date, 10);
           const curr_added_date = parseInt(current.added_date, 10);
 
-          if (curr_added_date > last_added_date) {
+          if (curr_added_date >= last_added_date) {
             return current;
           } else {
             return last;
           }
-        }).added_date;
+        }) || null;
       }
+      const last_comic_date = last_comic === null ? '0' : last_comic.added_date;
       return {
         ...state,
         busy: false,
+        rescan_count: action.payload.rescan_count,
+        import_count: action.payload.import_count,
         last_comic_date: last_comic_date,
         comics: comics,
       };
@@ -142,8 +163,6 @@ export function libraryReducer(
 
       if (index !== -1) {
         state.comics[index] = action.payload;
-      } else {
-        console.log(`*** ERROR: DID NOT FIND COMIC: id=${action.payload.id}`);
       }
 
       return {
@@ -193,6 +212,12 @@ export function libraryReducer(
         comics: state.comics,
       };
     }
+
+    case LibraryActions.LIBRARY_RESCAN_FILES:
+      return {
+        ...state,
+        busy: true,
+      };
 
     default:
       return state;

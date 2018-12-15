@@ -33,7 +33,11 @@ import java.text.ParseException;
 import java.util.List;
 
 import org.comixed.library.model.Comic;
+import org.comixed.library.model.LibraryStatus;
 import org.comixed.repositories.ComicRepository;
+import org.comixed.tasks.AddComicWorkerTask;
+import org.comixed.tasks.RescanComicWorkerTask;
+import org.comixed.tasks.Worker;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -53,16 +57,20 @@ public class ComicControllerTest
     private static final String TEST_NONEXISTENT_FILE = "src/test/resources/this-file-doesnt-exist.cbz";
     private static final String TEST_DIRECTORY = "src/test/resources";
     private static final String TEST_COMIC_FILE = "src/test/resources/example.cbz";
-    private static final long TEST_COMIC_COUNT = 320L;
     private static final String TEST_SERIES = "Awesome comic series";
     private static final String TEST_VOLUME = "2018";
     private static final String TEST_ISSUE_NUMBER = "52";
+    private static final int TEST_RESCAN_COUNT = 729;
+    private static final int TEST_IMPORT_COUNT = 217;
 
     @InjectMocks
     private ComicController controller;
 
     @Mock
     private ComicRepository comicRepository;
+
+    @Mock
+    private Worker worker;
 
     @Mock
     private List<Comic> comicList;
@@ -74,24 +82,36 @@ public class ComicControllerTest
     public void testGetComicsAddedSince() throws ParseException, InterruptedException
     {
         Mockito.when(comicRepository.findByDateAddedGreaterThan(Mockito.any(Date.class))).thenReturn(comicList);
+        Mockito.when(worker.getCountFor(RescanComicWorkerTask.class)).thenReturn(TEST_RESCAN_COUNT);
+        Mockito.when(worker.getCountFor(AddComicWorkerTask.class)).thenReturn(TEST_IMPORT_COUNT);
 
-        List<Comic> result = controller.getComicsAddedSince(0L, 0L);
+        LibraryStatus result = controller.getComicsAddedSince(0L, 0L);
+
+        assertSame(comicList, result.getComics());
+        assertEquals(TEST_RESCAN_COUNT, result.getRescanCount());
+        assertEquals(TEST_IMPORT_COUNT, result.getImportCount());
 
         Mockito.verify(comicRepository, Mockito.atLeast(1)).findByDateAddedGreaterThan(new Date(0L));
-
-        assertSame(comicList, result);
+        Mockito.verify(worker, Mockito.times(1)).getCountFor(RescanComicWorkerTask.class);
+        Mockito.verify(worker, Mockito.times(1)).getCountFor(AddComicWorkerTask.class);
     }
 
     @Test
     public void testGetComicsAddedSinceWithTimeout() throws ParseException, InterruptedException
     {
         Mockito.when(comicRepository.findByDateAddedGreaterThan(Mockito.any(Date.class))).thenReturn(comicList);
+        Mockito.when(worker.getCountFor(Mockito.any())).thenReturn(TEST_RESCAN_COUNT);
+        Mockito.when(worker.getCountFor(AddComicWorkerTask.class)).thenReturn(TEST_IMPORT_COUNT);
 
-        List<Comic> result = controller.getComicsAddedSince(0L, 250L);
+        LibraryStatus result = controller.getComicsAddedSince(0L, 250L);
+
+        assertSame(comicList, result.getComics());
+        assertEquals(TEST_RESCAN_COUNT, result.getRescanCount());
+        assertEquals(TEST_IMPORT_COUNT, result.getImportCount());
 
         Mockito.verify(comicRepository, Mockito.atLeast(1)).findByDateAddedGreaterThan(new Date(0L));
-
-        assertSame(comicList, result);
+        Mockito.verify(worker, Mockito.times(1)).getCountFor(RescanComicWorkerTask.class);
+        Mockito.verify(worker, Mockito.times(1)).getCountFor(AddComicWorkerTask.class);
     }
 
     @Test
@@ -214,18 +234,6 @@ public class ComicControllerTest
 
         Mockito.verify(comicRepository, Mockito.times(1)).findOne(TEST_COMIC_ID);
         Mockito.verify(comic, Mockito.atLeast(1)).getFilename();
-    }
-
-    @Test
-    public void testGetComicCount()
-    {
-        Mockito.when(comicRepository.count()).thenReturn(TEST_COMIC_COUNT);
-
-        long result = controller.getCount();
-
-        assertEquals(TEST_COMIC_COUNT, result);
-
-        Mockito.verify(comicRepository, Mockito.times(1)).count();
     }
 
     @Test

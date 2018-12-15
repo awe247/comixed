@@ -27,6 +27,7 @@ import 'rxjs/add/operator/switchMap';
 import * as LibraryActions from '../actions/library.actions';
 import { ComicService } from '../services/comic.service';
 import { AlertService } from '../services/alert.service';
+import { LibraryState } from '../models/library-state';
 import { Comic } from '../models/comics/comic';
 import { ScanType } from '../models/comics/scan-type';
 import { ComicFormat } from '../models/comics/comic-format';
@@ -99,10 +100,12 @@ export class LibraryEffects {
     .ofType<LibraryActions.LibraryFetchLibraryChanges>(LibraryActions.LIBRARY_FETCH_LIBRARY_CHANGES)
     .map(action => action.payload)
     .switchMap(action =>
-      this.comic_service.fetch_remote_library_state(action.last_comic_date)
+      this.comic_service.fetch_remote_library_state(action.last_comic_date, action.timeout)
         .catch((error: Error) => of(this.alert_service.show_error_message('Error getting library updates...', error)))
-        .map((comics: Array<Comic>) => new LibraryActions.LibraryMergeNewComics({
-          comics: comics,
+        .map((library_state: LibraryState) => new LibraryActions.LibraryMergeNewComics({
+          comics: library_state.comics,
+          rescan_count: library_state.rescan_count,
+          import_count: library_state.import_count,
         })));
 
   @Effect()
@@ -127,4 +130,16 @@ export class LibraryEffects {
         .do(() => this.alert_service.show_info_message('Metadata cleared...'))
         .catch((error: Error) => of(this.alert_service.show_error_message('Failed to clear metadata...', error)))
         .map((comic: Comic) => new LibraryActions.LibraryMetadataCleared({ comic: comic, })));
+
+  @Effect()
+  library_rescan_files$: Observable<Action> = this.actions$
+    .ofType<LibraryActions.LibraryRescanFiles>(LibraryActions.LIBRARY_RESCAN_FILES)
+    .switchMap(action =>
+      this.comic_service.rescan_files()
+        .do(() => this.alert_service.show_info_message('Library rescan started...'))
+        .catch((error: Error) => of(this.alert_service.show_error_message('Failed to start rescanning...', error)))
+        .map(() => new LibraryActions.LibraryFetchLibraryChanges({
+          last_comic_date: action.payload.last_comic_date,
+          timeout: 0,
+        })));
 }

@@ -24,6 +24,8 @@ import { ComicFormat } from './comics/comic-format';
 export interface Library {
   busy: boolean;
   last_comic_date: string;
+  rescan_count: number;
+  import_count: number;
   scan_types: Array<ScanType>;
   formats: Array<ComicFormat>;
   comics: Array<Comic>;
