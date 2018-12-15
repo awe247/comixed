@@ -1,6 +1,6 @@
 {
 	"name": "comixed-web-frontend",
-	"version": "0.2.9",
+	"version": "0.3.0-RC1",
 	"license": "GPLv3",
 	"scripts": {
 		"ng": "ng",
