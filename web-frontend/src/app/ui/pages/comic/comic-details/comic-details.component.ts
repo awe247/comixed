@@ -22,6 +22,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../app.state';
+import * as LibraryActions from '../../../../actions/library.actions';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { User } from '../../../../models/user/user';
@@ -85,36 +86,27 @@ export class ComicDetailsComponent implements OnInit, OnDestroy {
       (library: Library) => {
         this.library = library;
 
-        if (this.comic === null) {
+        if (this.comic === null || this.library.metadata_cleared) {
           this.comic = library.comics.find((comic: Comic) => {
             return comic.id === this.comic_id;
           }) || null;
+          this.store.dispatch(new LibraryActions.LibraryClearMetadataFlag());
         }
       });
     this.single_comic_scraping_subscription = this.single_comic_scraping$.subscribe(
       (library_scrape: SingleComicScraping) => {
         this.single_comic_scraping = library_scrape;
 
-        this.comic = this.single_comic_scraping.comic;
+        if (this.single_comic_scraping.comic) {
+          this.comic = this.single_comic_scraping.comic;
+        }
       });
     this.user_subscription = this.user$.subscribe(
       (user: User) => {
         this.user = user;
       });
     this.activatedRoute.params.subscribe(params => {
-      const id = +params['id'];
-      this.comic_service.load_comic_from_remote(id).subscribe(
-        (comic: Comic) => {
-          if (comic) {
-            this.comic = comic;
-          } else {
-            this.alert_service.show_error_message(`No such comic: id=${id}`, null);
-            this.router.navigateByUrl('/');
-          }
-        },
-        error => {
-          this.alert_service.show_error_message('Error while retrieving comic...', error);
-        });
+      this.comic_id = +params['id'];
     });
     this.activatedRoute.queryParams.subscribe(params => {
       this.set_page_size(parseInt(this.load_parameter(params[PAGE_SIZE_PARAMETER], '100'), 10));
